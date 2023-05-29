@@ -130,6 +130,7 @@ class InviteBot():
         else:
             self.client = TelegramClient(username, int(api_id), api_hash)
         try:
+            print(f'telegram app session is {self.client.session.filename}\ndouble is {double}')
             self.client.start()
         except Exception as e:
             print(e)
@@ -4958,6 +4959,8 @@ class InviteBot():
             except Exception as e:
                 print(f'\n***Cant get messages from admin***\n{e}\n')
                 await self.bot_aiogram.send_message(message.chat.id, f'\n***Cant get messages from admin***\n{e}\n')
+                if 'the key is not registered in the system' in str(e):
+                    self.main_invitebot
                 # await self.bot_dict['bot'].send_message(
                 #     self.bot_dict['chat_id'],
                 #     f"Getting history:\n{str(telethon)}: {channel}\npause 25-30 seconds...",
@@ -5696,7 +5699,7 @@ class InviteBot():
                                                 f'Please choose others', reply_markup=self.markup)
             await asyncio.sleep(random.randrange(2, 3))
 
-def run(double=False, token_in=None):
+def run(double=True, token_in=None):
     InviteBot(
         token_in=token_in,
         double=double

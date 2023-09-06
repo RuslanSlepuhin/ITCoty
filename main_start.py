@@ -1,10 +1,7 @@
 import os
-import time
 # from invite_bot_ver2 import run as run_parser_bot
-from _apps.talking_bot.mvp_connect_talking_bot import talking_bot_run
-from _apps.endpoints import endpoints
-from multiprocessing import Process, Pool
-import settings.os_getenv as settings
+from _apps import endpoints
+
 # ev = Event()
 
 num_processes = os.cpu_count()

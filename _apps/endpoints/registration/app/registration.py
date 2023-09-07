@@ -42,6 +42,7 @@ def get_user_by_id(user_id):
         'id': user.id,
         'username': user.username,
         'email': user.email,
+        'role': user.role,
     }
 
     return jsonify(user_info), 200

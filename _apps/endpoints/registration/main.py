@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_required, current_user
+from flask_login import LoginManager, login_required, current_user, UserMixin
 from flask_bcrypt import Bcrypt
 from flask import Blueprint
 from flask_migrate import Migrate
@@ -30,12 +30,14 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 login_manager = LoginManager(app)
+login_manager.init_app(app)
+
 bcrypt = Bcrypt(app)
 
 mail = Mail(app)
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
@@ -64,6 +66,11 @@ registration = Blueprint('registration', __name__)
 @app.route('/')
 def main():
     return '<h1>Main page</h1>'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 @registration.route('/auth/users', methods=['POST'])
@@ -111,13 +118,10 @@ def activate_user():
     # Check if the provided UID and token match an entry in the UserActivation table
     activation_entry = UserActivation.query.filter_by(uid=uid, token=token, activated=False).first()
 
-    if not activation_entry:
-        return jsonify({'message': 'Invalid activation data'}), 400
-
     user = User.query.get(activation_entry.user_id)
 
     if activation_entry.activated:
-        return jsonify({'message': 'User already activated'}), 200
+        return jsonify({'message': f'На email {user.email} отправлено письмо. Перейдите по ссылке в письме для подтверждения Вашего email.'}), 200
 
     user.role = 'active'
 
@@ -126,12 +130,63 @@ def activate_user():
     activation_entry.activated = True
     db.session.commit()
 
-    return jsonify({'message': 'User activated successfully'}), 200
+    return jsonify({'message': f'На email {user.email} отправлено письмо. Перейдите по ссылке в письме для подтверждения Вашего email.'}), 200
+
+
+@login_required
+@app.route('/auth/users/reset_password', methods=['POST'])
+def request_reset_password():
+    data = request.get_json()
+    email = data.get('email')
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return jsonify({'message': 'Посмотрите вашу почту'}), 200
+
+    reset_token = str(uuid.uuid4())
+
+    # Store a unique token in the database
+    password_reset_entry = PasswordReset(user_id=user.id, token=reset_token)
+    db.session.add(password_reset_entry)
+    db.session.commit()
+
+    # Send an email with a link containing the reset_token
+    send_password_reset_email(email, reset_token)
+
+    return jsonify({'message': 'Посмотрите вашу почту'}), 200
+
+
+@login_required
+@app.route('/auth/users/reset_password/<token>', methods=['POST'])
+def reset_password(token):
+    data = request.get_json()
+    password = data.get('password')
+
+    reset_entry = PasswordReset.query.filter_by(token=token).first()
+
+    if not reset_entry:
+        return jsonify({'message': 'Invalid reset token'}), 400
+
+    user = User.query.get(reset_entry.user_id)
+    user.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    db.session.delete(reset_entry)
+    db.session.commit()
+
+    return jsonify({'message': 'Password reset successful.'}), 200
 
 
 def send_activation_email(email):
     message = Message('Account Activation', sender=app.config['MAIL_USERNAME'], recipients=[email])
     message.body = 'Ваш аккаунт активирован! Спасибо за регистрацию!'
+    mail.send(message)
+
+
+def send_password_reset_email(email, reset_token):
+    reset_link = f"https://test.itcoty.ru/auth/users/reset_password/{reset_token}"
+    message = Message('Восстановление пароля', sender=app.config['MAIL_USERNAME'], recipients=[email])
+    message.html = render_template('password_reset_email.html', reset_link=reset_link)
     mail.send(message)
 
 

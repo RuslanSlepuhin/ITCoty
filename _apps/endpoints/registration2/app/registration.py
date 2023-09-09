@@ -9,7 +9,7 @@ from _apps.endpoints.registration.models import User, UserActivation, PasswordRe
 bcrypt = Bcrypt(app)
 
 
-@app.route('/auth/users/registration', methods=['POST'])
+@app.route('/auth/users/registration2', methods=['POST'])
 def register():
     data = request.get_json()
     username = data.get('username')
@@ -42,7 +42,7 @@ def get_user_by_id(user_id):
         'id': user.id,
         'username': user.username,
         'email': user.email,
-        'role': user.role,
+        #'role': user.role,
     }
 
     return jsonify(user_info), 200

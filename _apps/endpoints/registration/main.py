@@ -6,12 +6,17 @@ from flask import Blueprint
 from flask_migrate import Migrate
 from flask_mail import Mail, Message
 
-from decorators import admin_required, moderator_required
+from decorators import admin_required, moderator_required, verify_access_token
 from datetime import datetime
 from decouple import config
+from datetime import datetime, timedelta
 
 import uuid
+import jwt
+import secrets
 
+
+SECRET_KEY = secrets.token_hex(16)
 
 MAIL_USERNAME = config('MAIL_USERNAME')
 MAIL_PASSWORD = config('MAIL_PASSWORD')
@@ -79,6 +84,7 @@ def register():
     email = data.get('email')
     password = data.get('password')
     role = data.get('role')
+    id = data.get('id')
 
     # Check if the email is already registered
     existing_user = User.query.filter_by(email=email).first()
@@ -89,11 +95,20 @@ def register():
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     uid = str(uuid.uuid4())
-    token = str(uuid.uuid4())
 
     new_user = User(email=email, password=hashed_password, role=role)
     db.session.add(new_user)
     db.session.commit()
+
+    payload = {
+        'id': new_user.id,
+        'email': email,
+        'role': role,
+        'exp': datetime.utcnow() + timedelta(hours=1)  # Token expiration time
+    }
+
+    # Generate the JWT token
+    token = jwt.encode(payload, config('SECRET_KEY'), algorithm='HS256')
 
     activation_entry = UserActivation(user_id=new_user.id, uid=uid, token=token, activated=False)
     db.session.add(activation_entry)
@@ -102,8 +117,6 @@ def register():
     response_data = {
         'email': new_user.email,
         'id': new_user.id,
-        'uid': uid,
-        'token': token
     }
 
     return jsonify(response_data), 201
@@ -130,7 +143,12 @@ def activate_user():
     activation_entry.activated = True
     db.session.commit()
 
-    return jsonify({'message': f'На email {user.email} отправлено письмо. Перейдите по ссылке в письме для подтверждения Вашего email.'}), 200
+    response_data = {
+        'uid': uid,
+        'token': token
+    }
+
+    return jsonify(response_data), 200
 
 
 @login_required
@@ -144,10 +162,15 @@ def request_reset_password():
     if not user:
         return jsonify({'message': 'Посмотрите вашу почту'}), 200
 
-    reset_token = str(uuid.uuid4())
+    payload = {
+        'email': user.email,
+        'exp': datetime.utcnow() + timedelta(hours=1)
+    }
+
+    reset_token = jwt.encode(payload, config('SECRET_KEY'), algorithm='HS256')
 
     # Store a unique token in the database
-    password_reset_entry = PasswordReset(user_id=user.id, token=reset_token)
+    password_reset_entry = PasswordReset(user_id=user.id, token=reset_token.decode('utf-8'))
     db.session.add(password_reset_entry)
     db.session.commit()
 
@@ -188,6 +211,12 @@ def send_password_reset_email(email, reset_token):
     message = Message('Восстановление пароля', sender=app.config['MAIL_USERNAME'], recipients=[email])
     message.html = render_template('password_reset_email.html', reset_link=reset_link)
     mail.send(message)
+
+
+@app.route('/auth/users/me')
+@verify_access_token
+def get_user_info(user_info):
+    return jsonify(user_info)
 
 
 app.register_blueprint(registration)

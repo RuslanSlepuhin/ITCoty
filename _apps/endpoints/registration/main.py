@@ -1,22 +1,20 @@
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_required, current_user, UserMixin
+from flask_login import LoginManager, login_required, logout_user, login_user, current_user, UserMixin
 from flask_bcrypt import Bcrypt
 from flask import Blueprint
 from flask_migrate import Migrate
 from flask_mail import Mail, Message
 
 from decorators import admin_required, moderator_required, verify_access_token
-from datetime import datetime
 from decouple import config
 from datetime import datetime, timedelta
 
 import uuid
 import jwt
-import secrets
 
 
-SECRET_KEY = secrets.token_hex(16)
+SECRET_KEY = config("SECRET_KEY")
 
 MAIL_USERNAME = config('MAIL_USERNAME')
 MAIL_PASSWORD = config('MAIL_PASSWORD')
@@ -29,6 +27,8 @@ app.config['MAIL_USERNAME'] = MAIL_USERNAME
 app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
+
+app.secret_key = SECRET_KEY
 
 
 db = SQLAlchemy(app)
@@ -47,6 +47,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(20), default='user')
+    new_email = db.Column(db.String(120), unique=True)
 
 
 class UserActivation(db.Model):
@@ -78,13 +79,37 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+@registration.route('/auth/login', methods=['POST'])
+@registration.route('/auth/login/', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    user = User.query.filter_by(email=email).first()
+
+    if user and bcrypt.check_password_hash(user.password, password):
+        login_user(user)
+        return jsonify({'message': 'Login successful'}), 200
+    else:
+        return jsonify({'message': 'Invalid email or password'}), 401
+
+
+@registration.route('/auth/logout', methods=['POST'])
+@registration.route('/auth/logout/', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({'message': 'Logout successful'}), 200
+
+
 @registration.route('/auth/users', methods=['POST'])
+@registration.route('/auth/users/', methods=['POST'])
 def register():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
     role = data.get('role')
-    id = data.get('id')
 
     # Check if the email is already registered
     existing_user = User.query.filter_by(email=email).first()
@@ -123,6 +148,7 @@ def register():
 
 
 @registration.route('/auth/users/activation', methods=['POST'])
+@registration.route('/auth/users/activation/', methods=['POST'])
 def activate_user():
     data = request.get_json()
     uid = data.get('uid')
@@ -182,6 +208,7 @@ def request_reset_password():
 
 @login_required
 @app.route('/auth/users/reset_password/<token>', methods=['POST'])
+@app.route('/auth/users/reset_password/<token>/', methods=['POST'])
 def reset_password(token):
     data = request.get_json()
     password = data.get('password')
@@ -200,6 +227,41 @@ def reset_password(token):
     return jsonify({'message': 'Password reset successful.'}), 200
 
 
+@app.route('/auth/users/me')
+@app.route('/auth/users/me/')
+@verify_access_token
+def get_user_info(user_info):
+    return jsonify(user_info)
+
+
+@login_required
+@app.route('/auth/users/set_email', methods=['POST'])
+@app.route('/auth/users/set_email/', methods=['POST'])
+def set_email():
+    data = request.get_json()
+
+    if data is None:
+        return jsonify({'message': 'Invalid request data'}), 400
+
+    current_password = data.get('password')
+    new_email = data.get('new_email')
+
+    if not current_user.is_authenticated:
+        return jsonify({'message': 'User is not logged in'}), 401
+
+    if not bcrypt.check_password_hash(current_user.password, current_password):
+        return jsonify({'message': 'Incorrect current password'}), 400
+
+    existing_user = User.query.filter_by(email=new_email).first()
+    if existing_user:
+        return jsonify({'message': 'Email already registered'}), 400
+
+    current_user.new_email = new_email
+    db.session.commit()
+
+    return jsonify({'current_password': current_password, 'new_email': new_email}), 200
+
+
 def send_activation_email(email):
     message = Message('Account Activation', sender=app.config['MAIL_USERNAME'], recipients=[email])
     message.body = 'Ваш аккаунт активирован! Спасибо за регистрацию!'
@@ -211,12 +273,6 @@ def send_password_reset_email(email, reset_token):
     message = Message('Восстановление пароля', sender=app.config['MAIL_USERNAME'], recipients=[email])
     message.html = render_template('password_reset_email.html', reset_link=reset_link)
     mail.send(message)
-
-
-@app.route('/auth/users/me')
-@verify_access_token
-def get_user_info(user_info):
-    return jsonify(user_info)
 
 
 app.register_blueprint(registration)

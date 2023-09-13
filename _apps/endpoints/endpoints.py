@@ -3,29 +3,22 @@ import configparser
 from datetime import date, timedelta
 import json
 import os
-import time
-from multiprocessing import Process
-import time
 import psycopg2
-from aiogram.types import Message, Chat
 from flask import Flask
 import random
 from db_operations.scraping_db import DataBaseOperations
-from utils.additional_variables.additional_variables import admin_database, admin_table_fields, preview_fields_for_web
+from utils.additional_variables.additional_variables import admin_database, admin_table_fields
 from helper_functions.helper_functions import to_dict_from_admin_response
 from flask_cors import CORS
 from flask import request
-from utils.additional_variables.additional_variables import path_post_request_file, post_request_for_example, \
-    valid_professions, preview_fields_for_web, vacancies_database
+from utils.additional_variables.additional_variables import path_post_request_file, valid_professions, preview_fields_for_web, vacancies_database
 from patterns._export_pattern import export_pattern
-from patterns.data_pattern._data_pattern import pattern
 from filters.filter_jan_2023.filter_jan_2023 import VacancyFilter
 from helper_functions import helper_functions as helper
 from utils.additional_variables import additional_variables as variable
-import requests
-from invite_bot_ver2 import InviteBot, start_hardpushing
-from _apps.endpoints.predictive_method import Predictive
-from _apps.endpoints.client_init import ClientTelethon
+from invite_bot_ver2 import InviteBot
+from endpoints import Predictive
+from endpoints import ClientTelethon
 
 db=DataBaseOperations()
 vacancy_search = VacancyFilter()
@@ -157,7 +150,7 @@ class Endpoints:
                 param = f'{query}{id_query}'
                 vacancies_response = db.get_all_from_db(
                     table_name=vacancies_database,
-                    param=param,
+                    #param=param,
                     order=f'ORDER BY id DESC LIMIT {limit}',
                     field=preview_fields_for_web
                 )
@@ -295,7 +288,7 @@ class Endpoints:
                     table_name=table,
                     param=query,
                     order = "ORDER BY time_of_public DESC LIMIT 20",
-                    field=admin_table_fields
+                     field=admin_table_fields
                 )
                 if response:
                     if type(response) is not str:
@@ -385,8 +378,8 @@ class Endpoints:
             prof = 'junior' if not prof else prof
             chat_id = request.args.get('chat_id')
 
-            ct = ClientTelethon()
-            client = ct.init()
+            #ct = ClientTelethon()
+            #client = ct.init()
 
             # loop = asyncio.get_event_loop()
             # loop.create_task(client.start())

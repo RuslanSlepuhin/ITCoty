@@ -97,10 +97,12 @@ def login():
 
 @registration.route('/auth/logout', methods=['POST'])
 @registration.route('/auth/logout/', methods=['POST'])
-@login_required
 def logout():
-    logout_user()
-    return jsonify({'message': 'Logout successful'}), 200
+    if current_user.is_authenticated:
+        logout_user()
+        return jsonify({'message': 'Logout successful'}), 200
+
+    return jsonify({'message': 'You are not logged in'}), 401
 
 
 @registration.route('/auth/users', methods=['POST'])
@@ -179,6 +181,7 @@ def activate_user():
 
 @login_required
 @app.route('/auth/users/reset_password', methods=['POST'])
+@app.route('/auth/users/reset_password/', methods=['POST'])
 def request_reset_password():
     data = request.get_json()
     email = data.get('email')
@@ -196,7 +199,7 @@ def request_reset_password():
     reset_token = jwt.encode(payload, config('SECRET_KEY'), algorithm='HS256')
 
     # Store a unique token in the database
-    password_reset_entry = PasswordReset(user_id=user.id, token=reset_token.decode('utf-8'))
+    password_reset_entry = PasswordReset(user_id=user.id, token=reset_token)
     db.session.add(password_reset_entry)
     db.session.commit()
 

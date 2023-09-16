@@ -2006,7 +2006,7 @@ class InviteBot():
                 #     message=callback.message,
                 #     callback_data=callback.data,
                 #     hard_pushing=True,
-                #     hard_push_profession=channel
+                #     hard_push_profession=profession
                 # )
 
             if callback.data == 'choose_one_channel':  # compose keyboard for each profession
@@ -3316,15 +3316,18 @@ class InviteBot():
                 # await main(report=self.report, client=self.client, bot_dict=bot_dict)
                 # await self.report.add_to_excel(report_type='parsing')
 
-                if silent:
-                    sites_parser = SitesParser(client=self.client, bot_dict=bot_dict, report=self.report)
-                else:
-                    sites_parser = SitesParser(client=self.client, bot_dict=bot_dict, report=self.report)
-
-                await sites_parser.call_sites()
-
+                # if silent:
+                #     sites_parser = SitesParser(client=self.client, bot_dict=bot_dict, report=self.report)
+                # else:
+                #     sites_parser = SitesParser(client=self.client, bot_dict=bot_dict, report=self.report)
+                #
+                # await sites_parser.call_sites()
+                #
                 digest_parser = DigestParser(client=self.client, bot_dict=bot_dict, report=self.report)
-                await digest_parser.main_start()
+                try:
+                    await digest_parser.main_start()
+                except Exception as e:
+                    await self.bot_aiogram.send_message(Message.chat.id, f"DIGEST error: {e}")
 
                 self.db.push_to_db_common(
                     table_name='parser_at_work',

@@ -42712,3 +42712,6 @@ SUB: junior:
 [BUTTON] admin callback.data: admin/junior
 ----------02-08-2023-----------
 [BUTTON] admin callback.data: admin/junior
+DB ID vacancy: 229602
+TITLE: Бирюзовый HR-менеджер
+SUB: hr: 

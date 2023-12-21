@@ -1,6 +1,8 @@
 import configparser
 import json
 import re
+import time
+
 from utils.additional_variables.additional_variables import admin_database, archive_database, admin_table_fields, \
     valid_professions, reject_table as reject_database
 from utils.additional_variables.additional_variables import table_list_for_checking_message_in_db, \
@@ -212,7 +214,7 @@ class DataBaseOperations:
     #             except Exception as ex:
     #                 return {'error': ex, 'response': None}
     #         self.db_is_busy = False
-
+    #
     def get_all_from_db(self, table_name, param='', without_sort=False, order=None, field='*', curs=None):
 
         self.connect_db()
@@ -223,21 +225,27 @@ class DataBaseOperations:
             query = f"""SELECT {field} FROM {table_name} {param} {order}"""
         else:
             query = f"""SELECT {field} FROM {table_name} {param} """
-
-        try:
-            with self.con:
-                try:
-                    cur.execute(query)
-                    response = cur.fetchall()
-                except Exception as e:
-                    print(e)
-                    return str(e)
-            if curs:
-                return cur
-            return response
-        except Exception as ex:
-            print(f"\nerror in get_all_from_db: {ex}\n")
-            return False
+        while self.db_is_busy:
+            time.sleep(0.1)
+            print('time.sleep 0.1')
+        else:
+            try:
+                self.db_is_busy = True
+                with self.con:
+                    try:
+                        cur.execute(query)
+                        response = cur.fetchall()
+                    except Exception as e:
+                        print(e)
+                        return str(e)
+                if curs:
+                    return cur
+                self.db_is_busy = False
+                return response
+            except Exception as ex:
+                print(f"\nerror in get_all_from_db: {ex}\n")
+                self.db_is_busy = False
+                return False
 
     async def get_all_from_db_async2(self, table_name, param='', without_sort=False, order=None, field='*', curs=None):
 
@@ -807,6 +815,7 @@ class DataBaseOperations:
         # results_dict['body'] = self.clear_title_or_body(results_dict['body'])
 
         if check_or_exists:
+            print('check or exists')
             tables_list_for_vacancy_searching = set(profession['profession']).copy()
             tables_list_for_vacancy_searching.discard('no_sort')
             tables_list_for_vacancy_searching = tables_list_for_vacancy_searching.union(additional_elements)
@@ -827,6 +836,7 @@ class DataBaseOperations:
         if results_dict['profession'] == 'no_sort':
             table_name = archive_database
 
+        print('new post')
         new_post = self.compose_query(vacancy_dict=results_dict, table_name=table_name)
 
         if not self.con:
@@ -835,6 +845,7 @@ class DataBaseOperations:
         self.check_or_create_table_admin(cur)
         with self.con:
             try:
+                print('cur execute')
                 cur.execute(new_post)
                 print(f'+++++++++++++ The vacancy has been added to DB {table_name}\n')
                 if self.report:

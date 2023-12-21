@@ -40,6 +40,8 @@ class SuperJobGetInformation:
         if self.bot_dict:
             self.bot = self.bot_dict['bot']
             self.chat_id = self.bot_dict['chat_id']
+        else:
+            self.bot = None
         self.browser = None
         self.main_url = 'https://russia.superjob.ru'
         self.count_message_in_one_channel = 1

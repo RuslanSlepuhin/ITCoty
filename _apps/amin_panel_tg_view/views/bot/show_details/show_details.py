@@ -22,20 +22,13 @@ class AdditionalKeyboard():
             self.professions_button.append(InlineKeyboardButton(f"✅{key}" if key in vacancy_profession else key, callback_data=f'profession:{key}'))
 
         for profession in vacancy_profession:
-            # print(profession)
             try:
-                # print(f"9999999999 pattern[profession] {pattern[profession]['sub']} 9999999999")
                 subs = list(pattern[profession]['sub'].keys())
                 for key in subs:
                     self.sub_button.append(InlineKeyboardButton(f"☑️{profession[:1]}/{key}" if key in vacancy_subs else f"{profession[:1]}/{key}",
                                                                 callback_data=f'sub:{key}'))
-                # self.subs.extend(list(pattern[profession]['sub'].keys()))
             except Exception as ex:
-                # print(f'resolved error (2): {profession}', ex)
                 pass
-
-        # for key in self.subs:
-        #     self.sub_button.append(InlineKeyboardButton(f"✅/{key}" if key in vacancy_subs else f"/{key}", callback_data=f'sub:{key}'))
 
         await self.compose_additional_rows_keyboard(step=5, button_list=self.professions_button)
         await self.compose_additional_rows_keyboard(step=4, button_list=self.sub_button)
@@ -64,13 +57,10 @@ class AdditionalKeyboard():
             # remove subs for this profession
             # if press_profession not in ['junior']:
             subs_raw_list = card['sub'].split("; ")
-            # print('!!sub_list_raw:', subs_raw_list)
             subs_raw_list_copy = subs_raw_list.copy()
             for item in subs_raw_list_copy:
                 if f"{press_profession}:" in item:
-                    # print('item 69:', item)
                     subs_raw_list.remove(item)
-            # print(f'11111111111 subs_raw_list {subs_raw_list} 11111111111111')
             card['sub'] = "; ".join(subs_raw_list) if subs_raw_list else None
 
         else:
@@ -84,7 +74,6 @@ class AdditionalKeyboard():
     async def check_sub(self, callback_data, card):
 
         subs_raw_list = card['sub'].split("; ") if card['sub'] else []
-        # print(f'3333333333 subs_raw_list {subs_raw_list} 3333333333')
         card_sub = []
         for i in subs_raw_list:
             if i:

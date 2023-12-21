@@ -15,34 +15,35 @@ from helper_functions.helper_functions import edit_message, send_message, send_f
 from helper_functions.parser_find_add_parameters.parser_find_add_parameters import FinderAddParameters
 from report.report_variables import report_file_path
 from helper_functions import helper_functions as helper
+from sites.scraping_hh import HHGetInformation
 
-class RemoteJobGetInformation:
+class RemoteJobGetInformation(HHGetInformation):
 
     def __init__(self, **kwargs):
-
-        self.report = kwargs['report'] if 'report' in kwargs else None
-        self.search_word = kwargs['search_word'] if 'search_word' in kwargs else sites_search_words
-        self.bot_dict = kwargs['bot_dict'] if 'bot_dict' in kwargs else None
-        self.helper_parser_site = HelperSite_Parser(report=self.report)
-        self.db = DataBaseOperations(report=self.report)
-        self.find_parameters = FinderAddParameters()
-        self.db_tables = None
-        self.options = None
-        self.page = None
-        self.page_number = 1
-        self.current_message = None
-        self.msg = None
-        self.written_vacancies = 0
-        self.rejected_vacancies = 0
-        if self.bot_dict:
-            self.bot = self.bot_dict['bot']
-            self.chat_id = self.bot_dict['chat_id']
-        self.browser = None
+        super().__init__(**kwargs)
+        # self.report = kwargs['report'] if 'report' in kwargs else None
+        # self.search_word = kwargs['search_word'] if 'search_word' in kwargs else sites_search_words
+        # self.bot_dict = kwargs['bot_dict'] if 'bot_dict' in kwargs else None
+        # self.helper_parser_site = HelperSite_Parser(report=self.report)
+        # self.db = DataBaseOperations(report=self.report)
+        # self.find_parameters = FinderAddParameters()
+        # self.db_tables = None
+        # self.options = None
+        # self.page = None
+        # self.page_number = 1
+        # self.current_message = None
+        # self.msg = None
+        # self.written_vacancies = 0
+        # self.rejected_vacancies = 0
+        # if self.bot_dict:
+        #     self.bot = self.bot_dict['bot']
+        #     self.chat_id = self.bot_dict['chat_id']
+        # self.browser = None
         self.main_url = 'https://remote-job.ru'
-        self.count_message_in_one_channel = 1
-        self.found_by_link = 0
-        self.response = None
-        self.helper = helper
+        # self.count_message_in_one_channel = 1
+        # self.found_by_link = 0
+        # self.response = None
+        # self.helper = helper
 
     async def get_content(self, db_tables=None):
         print('control: 1')
@@ -70,16 +71,7 @@ class RemoteJobGetInformation:
 
     async def get_info(self):
         last_page = 0
-        print('control: 2')
-
-        try:
-            self.browser = webdriver.Chrome(
-                executable_path=chrome_driver_path,
-                options=options
-            )
-        except:
-            self.browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        print('control: 3')
+        await self.get_browser()
         # -------------------- clicks on the main page --------------------
         self.current_session = await self.helper_parser_site.get_name_session()
 

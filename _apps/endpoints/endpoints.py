@@ -121,24 +121,28 @@ class Endpoints:
 
         @app.route("/vacancy", methods = ['GET'])
         async def get_single_vacancy_for_web_vacancy():
+            print('start | GET vacancy alone')
             print("124 vacancy")
-            await asyncio.sleep(0.2)
+            # await asyncio.sleep(0.2)
             vacancy_id = request.args.get('id')
             print('-------------------------------')
+            print('finish | GET vacancy alone')
             return await get_single_vacancies_for_web(vacancy_id)
 
         @app.route("/vacancies", methods = ['GET'])
         async def get_all_vacancies_for_web_vacancies():
-            time.sleep(0.2)
+            print('start | GET vacancies')
+            # time.sleep(0.2)
             print('128 vacancies')
             limit = request.args.get('limit')
             start_id = request.args.get('id')
             print('-------------------------------')
+            print('finish | GET vacancies')
             return await get_all_vacancies_for_web(start_id=start_id, limit=limit)
 
         @app.route("/vacancies", methods=['POST'])
         async def vacancies_with_filters():
-            time.sleep(0.2)
+            print('start | POST vacancies')
             data = request.json
             if 'limit' in data and data['limit']:
                 limit = data['limit']
@@ -150,6 +154,7 @@ class Endpoints:
                 id_query = ''
             query = Predictive(data).get_full_query()
             responses_dict = {}
+            # time.sleep(0.5)
             amount_response = db.get_all_from_db(
                 table_name=vacancies_database,
                 param=query,
@@ -158,7 +163,7 @@ class Endpoints:
             )
             print(f'*** amount response: {amount_response}')
             if amount_response:
-                time.sleep(0.5)
+                # time.sleep(0.5)
                 responses_dict['amount'] = amount_response[0][0]
                 param = f'{query}{id_query} AND id IS NOT NULL'
                 vacancies_response = db.get_all_from_db(
@@ -171,6 +176,7 @@ class Endpoints:
 
                 if vacancies_response:
                     responses_dict['vacancies'] = await package_list_to_dict(vacancies_response, preview_fields_for_web)
+            print('finish | POST vacancies')
             return responses_dict
 
 
@@ -420,15 +426,19 @@ class Endpoints:
         async def get_single_vacancies_for_web(vacancy_id):
             response = []
             loop = asyncio.get_running_loop()
-            pass
             try:
-                response = await loop.create_task(
-                    db.get_all_from_db_async2(
+                # response = await loop.create_task(
+                #     db.get_all_from_db_async2(
+                #         table_name=vacancies_database,
+                #         param=f"WHERE id={vacancy_id}",
+                #         field=variable.admin_table_fields
+                #     ), name='db_request'
+                # )
+                response = db.get_all_from_db(
                         table_name=vacancies_database,
                         param=f"WHERE id={vacancy_id}",
                         field=variable.admin_table_fields
-                    ), name='db_request'
-                )
+                    )
             except Exception as ex:
                 print(ex)
 
@@ -502,15 +512,21 @@ class Endpoints:
             #     print("501 endpoint", ex)
 
             try:
-                loop = asyncio.get_running_loop()
-                response = await loop.create_task(
-                    db.get_all_from_db_async2(
+                # loop = asyncio.get_running_loop()
+                # response = await loop.create_task(
+                #     db.get_all_from_db_async2(
+                #         table_name='vacancies',
+                #         order=f'ORDER BY id DESC LIMIT {limit}',
+                #         param=param,
+                #         field=f'DISTINCT ON (id, body) {preview_fields_for_web}'
+                #     )
+                # )
+                response = db.get_all_from_db(
                         table_name='vacancies',
                         order=f'ORDER BY id DESC LIMIT {limit}',
                         param=param,
                         field=f'DISTINCT ON (id, body) {preview_fields_for_web}'
                     )
-                )
             except Exception as ex:
                 print("501 endpoint", ex)
 

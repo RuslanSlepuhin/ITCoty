@@ -108,7 +108,7 @@ class DigestParser():
                     if parser_response['response']['vacancy']:
                         status = f"{parser_response['response']['vacancy']}"
                 except Exception as ex:
-                    print('!!!! db_check_add_single_vacancy: Something is wrong')
+                    print(f'====\n!!!! db_check_add_single_vacancy: Something is wrong\n{ex}\n===')
             return {'status': status, 'domain': domain, 'error': None}
         except Exception as e:
             return {'status': status, 'domain': domain, 'error': e}

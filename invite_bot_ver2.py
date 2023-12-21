@@ -34,7 +34,7 @@ from sites.scraping_dev import DevGetInformation
 from sites.scraping_geekjob import GeekGetInformation
 from sites.scraping_hh import HHGetInformation
 from helper_functions.progress import ShowProgress
-from sites.scraping_superjob import SuperJobGetInformation
+from sites._scraping_superjob import SuperJobGetInformation
 from sites.scraping_svyazi import SvyaziGetInformation
 from sites.scrapping_finder import FinderGetInformation
 from sites.scraping_habr import HabrGetInformation
@@ -183,7 +183,6 @@ class InviteBot():
         except Exception as e:
             print(e)
 
-
     def main_invitebot(self):
 
         async def connect_with_client(message, id_user):
@@ -230,9 +229,6 @@ class InviteBot():
         class Form_hh(StatesGroup):
             word = State()
 
-        class Form_geek(StatesGroup):
-            word = State()
-
         class Form_emergency_push(StatesGroup):
             profession = State()
 
@@ -251,12 +247,6 @@ class InviteBot():
             profession = State()
             quantity_leave = State()
 
-        class Form_pattern(StatesGroup):
-            profession = State()
-            sub = State()
-            sub_profession = State()
-            sub_sub = State()
-
         class Form_db(StatesGroup):
             name = State()
 
@@ -271,9 +261,6 @@ class InviteBot():
 
         class Form_rollback(StatesGroup):
             short_session_name = State()
-
-        class Form_vacancy_name(StatesGroup):
-            profession = State()
 
         class Form_report(StatesGroup):
             date_in = State()
@@ -956,7 +943,6 @@ class InviteBot():
                 self.task = None
             else:
                 await self.msg.edit_text(f"{self.msg.text}\nSorry, no one parser works")
-
 
         @self.dp.message_handler(commands=['db_check_url_vacancy'])
         async def db_check_url_vacancy_commands(message: types.Message):
@@ -1775,7 +1761,6 @@ class InviteBot():
                     await self.bot_aiogram.send_message(message.chat.id, "Not vacancies for transfer")
             await self.bot_aiogram.send_message(message.chat.id, "Done")
 
-
         async def client_sign_in(message):
             try:
 
@@ -2385,6 +2370,7 @@ class InviteBot():
 
             else:
                 await self.bot_aiogram.send_message(message.chat.id, 'Для авторизации нажмите /start')
+
         async def invite_users(message, channel):
             logs.write_log(f"invite_bot_2: invite_users: if marker")
             msg = None
@@ -2673,7 +2659,6 @@ class InviteBot():
 
             await Form.api_id.set()
             await self.bot_aiogram.send_message(message.chat.id, "Введите api_id (отменить /cancel)")
-
 
         async def get_time_start():
             time_start = None
@@ -3046,8 +3031,6 @@ class InviteBot():
             await self.send_file_to_user(message, f'excel/excel/one_day_vacancies.xlsx')
             print('got it')
 
-
-
         async def output_consolidated_table(message):
             dates = []
 
@@ -3085,9 +3068,6 @@ class InviteBot():
         async def add_log_inviter(text):
             with open('inviter_log.txt', 'a+') as file:
                 file.write(text)
-
-        async def print_log(text):
-            print(f"{datetime.now().strftime('%H:%M:%S')}:\n{text}")
 
         async def refresh(message, save_changes=False):
             deleted_vacancy = 0
@@ -3266,90 +3246,33 @@ class InviteBot():
             return matches_list
 
         async def get_news(message, silent=False):
-            self.db.check_or_create_table(
-                table_name=variable.reject_table,
-                fields=variable.vacancy_table
-            )
-            unlock_kb = ReplyKeyboardMarkup(resize_keyboard=True)
-            button_unlock = KeyboardButton('Stop parsers')
-            unlock_kb.add(button_unlock)
-            self.unlock_message = await self.bot_aiogram.send_message(message.chat.id,
-                                                                      'the admin panel will be locked until the end of the operation. '
-                                                                      'Or press the unlock button (only available to you)',
-                                                                      reply_markup=unlock_kb)
 
-            tables = self.db.get_information_about_tables_and_fields(only_tables=True)
-            if "parser_at_work" not in tables:
-                self.db.create_table_common(
-                    field_list=["parser_at_work BOOLEAN"],
-                    table_name="parser_at_work"
-                )
-                self.db.push_to_db_common(
-                    table_name='parser_at_work',
-                    fields_values_dict={"parser_at_work": False}
-                )
-            self.parser_at_work = self.db.get_all_from_db(
-                table_name="parser_at_work",
-                param="WHERE id=1",
-                without_sort=True,
-            )[0][1]
-
-            if not self.parser_at_work:
-                self.db.push_to_db_common(
-                    table_name='parser_at_work',
-                    fields_values_dict={"parser_at_work": True},
-                    params="WHERE id=1"
-                )
+            if await self.change_parser_status(message):
                 # ----------------- make the current session and write it in DB ----------------------
-                await send_log_txt(text='', write_mode='w')
                 self.current_session = datetime.now().strftime("%Y%m%d%H%M%S")
                 self.db.write_current_session(self.current_session)
                 await self.bot_aiogram.send_message(message.chat.id, f'Session is {self.current_session}')
                 await asyncio.sleep(1)
                 self.start_time_scraping_channels = datetime.now()
                 print('time_start = ', self.start_time_scraping_channels)
-                await asyncio.sleep(1)
 
-                # # -----------------------parsing telegram channels -------------------------------------
                 bot_dict = {'bot': self.bot_aiogram, 'chat_id': message.chat.id}
-
                 # await main(report=self.report, client=self.client, bot_dict=bot_dict)
                 # await self.report.add_to_excel(report_type='parsing')
+                sites_parser = SitesParser(client=self.client, bot_dict=bot_dict, report=self.report)
+                await sites_parser.call_sites()
+                # digest_parser = DigestParser(client=self.client, bot_dict=bot_dict, report=self.report)
+                # try:
+                #     await digest_parser.main_start()
+                # except Exception as e:
+                #     await self.bot_aiogram.send_message(Message.chat.id, f"DIGEST error: {e}")
+                await self.bot_aiogram.send_message(message.chat.id, "Digest parsing has been done")
 
-                # if silent:
-                #     sites_parser = SitesParser(client=self.client, bot_dict=bot_dict, report=self.report)
-                # else:
-                #     sites_parser = SitesParser(client=self.client, bot_dict=bot_dict, report=self.report)
-                #
-                # await sites_parser.call_sites()
-                #
-                digest_parser = DigestParser(client=self.client, bot_dict=bot_dict, report=self.report)
-                try:
-                    await digest_parser.main_start()
-                except Exception as e:
-                    await self.bot_aiogram.send_message(Message.chat.id, f"DIGEST error: {e}")
+                await self.change_parser_status(message, before_parsing=False)
 
-                self.db.push_to_db_common(
-                    table_name='parser_at_work',
-                    fields_values_dict={"parser_at_work": False},
-                    params="WHERE id=1"
-                )
-                await self.send_file_to_user(
-                    message=message,
-                    path=variable.flood_control_logs_path,
-                    caption="take the exception logs"
-                )
-                await self.send_file_to_user(
-                    message=message,
-                    path=variable.path_log_check_profession,
-                    caption="take the profession logs"
-                )
             else:
-                await self.bot_aiogram.send_message(message.chat.id, "Sorry, parser at work. Request a stop from developers")
-
-
-
-
+                await self.bot_aiogram.send_message(message.chat.id,
+                                                    "Sorry, parser at work. Request a stop from developers")
 
         async def debug_function():
             response = self.db.get_all_from_db(
@@ -3683,8 +3606,6 @@ class InviteBot():
             await self.bot_aiogram.send_message(message.chat.id, f"😱 (-)Vacancy NOT FOUND")
             return ''
 
-
-
         async def add_subs():
             self.db.append_columns(
                 table_name_list=variable.valid_professions,
@@ -3945,7 +3866,6 @@ class InviteBot():
                     current_number=n,
                     end_number=length
                 )
-
 
         async def get_vacancies_name_by_profession(message, profession):
             vacancy_name_str = ''
@@ -4314,7 +4234,6 @@ class InviteBot():
         # start_polling(self.dp)
         executor.start_polling(self.dp, skip_updates=True)
 
-
     async def delete_used_vacancy_from_admin_temporary(self, vacancy, id_admin_last_session_table):
         # ------------------- cleaning the areas for the used vacancy  -------------------
         print('\ndelete vacancy\n')
@@ -4526,49 +4445,6 @@ class InviteBot():
 
             await self.send_pivot_shorts(telegraph_links_dict, message)
 
-            # numbers_vacancies_dict = telegraph_links_dict['numbers_vacancies_dict']
-            # telegraph_links_dict = telegraph_links_dict['telegraph_links_dict']
-            #
-            # group_shorts = f"Дайджест для <b>{self.profession.title().replace('_', ' ')}</b> за {datetime.now().strftime('%d.%m.%Y')}\n\n"
-            # for key in telegraph_links_dict:
-            #     group_shorts += f"Вакансии для <a href='{telegraph_links_dict[key]}'><b>#{key.capitalize()}</b></a> ({numbers_vacancies_dict[key]} предложений)\n\n"
-            #
-            # photo_path = await helper.get_picture_path('junior', self.profession)
-            #
-            # if profession_channel:
-            #     chat_id = config['My_channels'][f'{profession_channel}_channel']
-            #     try:
-            #         with open(photo_path, 'rb') as file:
-            #             try:
-            #                 await self.bot_aiogram.send_photo(chat_id=chat_id, photo=file, caption=group_shorts, parse_mode='html')
-            #             except Exception as ex:
-            #                 print(f'Key {count}: picture error: {ex}. Chat_id: profession channel')
-            #                 profession_channel = False
-            #     except Exception as e:
-            #         print(f"Key {count}: Can not open the pictures: {e}. Path: {photo_path}")
-            #
-            # if not profession_channel:
-            #     chat_id = variable.channel_id_for_shorts
-            #     try:
-            #         with open(photo_path, 'rb') as file:
-            #             try:
-            #                 await self.bot_aiogram.send_photo(chat_id=chat_id, photo=file, caption=group_shorts, parse_mode='html')
-            #             except Exception as ex:
-            #                 print(f'Key {count}: picture error: {ex}. Chat_id: channel for shorts')
-            #                 chat_id = message.chat.id
-            #                 try:
-            #                     with open(photo_path, 'rb') as file:
-            #                         try:
-            #                             await self.bot_aiogram.send_photo(chat_id=chat_id, photo=file, caption=group_shorts,
-            #                                                               parse_mode='html')
-            #                         except Exception as ex:
-            #                             print(f'Key {count}: picture error: {ex}. Chat_id: message chat id')
-            #                             print(f'Key {count}: ONE SHORTS HAS BEEN LOOSED')
-            #                 except Exception as e:
-            #                     print(e)
-            #     except Exception as e:
-            #         print(e)
-            #         await helper.send_message(self.bot_aiogram, message.chat.id, f"ONE SHORTS HAS BEEN LOOSED{str(e)}")
             return True
 # # ------------------------------------------------------------------------
         for key in self.message_for_send_dict:
@@ -4691,18 +4567,11 @@ class InviteBot():
         keyboard = await self.compose_keyboard_in_bar(buttons=['Post to Telegraph'])
         await self.bot_aiogram.send_message(message.chat.id, "When you will be ready to public shorts in Telegra.ph, use the option by button below ⬇️", reply_markup=keyboard, parse_mode='html', disable_web_page_preview=True)
 
-    # async def telegraph_public_shorts(self):
-    #     telegraph = TelegraphPoster()
-    #     telegraph_links_dict = telegraph.telegraph_post_digests(self.message_for_send_dict, self.profession)
-    #
-    #     return telegraph_links_dict
-
     async def write_to_logs_error(self, text):
         with open("./logs/logs_errors.txt", "a", encoding='utf-8') as file:
             file.write(text)
 
-    async def compose_message(self, one_profession, vacancy_from_admin_dict, full, write_changes_to_db=True,
-                              message=None):
+    async def compose_message(self, one_profession, vacancy_from_admin_dict, full, write_changes_to_db=True, message=None):
         profession_list = {}
 
         if vacancy_from_admin_dict['profession']:
@@ -5949,7 +5818,6 @@ class InviteBot():
             else:
                 print(f"table {table} is EMPTY, NEXT table")
 
-
     async def hard_pushing_by_schedule(self, message, profession_list):
 
         if not message:
@@ -6145,48 +6013,9 @@ class InviteBot():
         return print('Schedule pushing has been stopped')
 
     async def show_statistics(self):
-        result_dict = {}
-        # --------- compose data from last session --------------
-        result_dict['last_session'] = {}
-        result_dict['all'] = {}
-        if not self.current_session:
-            self.current_session = await self.get_last_session()
-        # ------------------------------ new ------------------------------------
-        message_for_send = 'Statistics results:\n\n'
-        for one_prof in variable.valid_professions:
-            param = f"WHERE profession LIKE '%{one_prof}, %' OR profession LIKE '%, {one_prof}%' " \
-                    f"OR profession='{one_prof}'" if one_prof == 'ba' else f"WHERE profession LIKE '%{one_prof}%'"
-            response_all = self.db.get_all_from_db(
-                table_name=variable.admin_database,
-                param=param,
-                field='id'
-            )
-            result_dict['all'][one_prof] = len(response_all)
-
-            param += " AND session='{self.current_session}'"
-
-            response_last_session = self.db.get_all_from_db(
-                table_name=variable.admin_database,
-                param=param,
-                field='id'
-            )
-            result_dict['last_session'][one_prof] = len(response_last_session)
-            # prof_dict = helper.string_to_list(
-            #     text=variable.admin_table_fields,
-            #     separator=', '
-            # )
-        responses = self.db.get_all_from_db(
-            table_name=variable.admin_database,
-            param="WHERE profession <> 'no_sort'",
-            field='id'
-        )
-        for item in variable.valid_professions:
-            message_for_send += f"{item}: {result_dict['last_session'][item]}/{result_dict['all'][item]}\n"
-        message_for_send += f"-----------------\nSumm: {sum(result_dict['last_session'].values())}/{sum(result_dict['all'].values())}\n" \
-                            f"vacancies number: {len(responses)}"
+        message_for_send = await helper.statistics_from_db(self.db)
         return message_for_send
         # -----------------------------------------------------------------------
-
 
     async def get_last_session(self):
         last_session = ''
@@ -6390,7 +6219,6 @@ class InviteBot():
             button_unlock = KeyboardButton(button)
             kb.add(button_unlock)
         return kb
-
 
     async def db_check_add_single_vacancy(self, message, url):
         table_list = variable.all_tables_for_vacancy_search
@@ -6961,6 +6789,66 @@ class InviteBot():
             print('client has been disconnected')
         else:
             print('client not is connection!')
+
+    async def change_parser_status(self, message, before_parsing=True):
+
+        if before_parsing:
+            self.db.check_or_create_table(
+                table_name=variable.reject_table,
+                fields=variable.vacancy_table
+            )
+            unlock_kb = ReplyKeyboardMarkup(resize_keyboard=True)
+            button_unlock = KeyboardButton('Stop parsers')
+            unlock_kb.add(button_unlock)
+            self.unlock_message = await self.bot_aiogram.send_message(message.chat.id,
+                                                                      'the admin panel will be locked until the end of the operation. '
+                                                                      'Or press the unlock button (only available to you)',
+                                                                      reply_markup=unlock_kb)
+
+            tables = self.db.get_information_about_tables_and_fields(only_tables=True)
+
+            if "parser_at_work" not in tables:
+                self.db.create_table_common(
+                    field_list=["parser_at_work BOOLEAN"],
+                    table_name="parser_at_work"
+                )
+                self.db.push_to_db_common(
+                    table_name='parser_at_work',
+                    fields_values_dict={"parser_at_work": False}
+                )
+            self.parser_at_work = self.db.get_all_from_db(
+                table_name="parser_at_work",
+                param="WHERE id=1",
+                without_sort=True,
+            )[0][1]
+
+            if not self.parser_at_work:
+                self.db.push_to_db_common(
+                    table_name='parser_at_work',
+                    fields_values_dict={"parser_at_work": True},
+                    params="WHERE id=1"
+                )
+                return True
+            else:
+                return False
+
+        else:
+            self.db.push_to_db_common(
+                table_name='parser_at_work',
+                fields_values_dict={"parser_at_work": False},
+                params="WHERE id=1"
+            )
+            await self.send_file_to_user(
+                message=message,
+                path=variable.flood_control_logs_path,
+                caption="take the exception logs"
+            )
+            await self.send_file_to_user(
+                message=message,
+                path=variable.path_log_check_profession,
+                caption="take the profession logs"
+            )
+
 
 def run(double=False, token_in=None):
     InviteBot(

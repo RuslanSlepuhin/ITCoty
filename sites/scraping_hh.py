@@ -35,6 +35,8 @@ class HHGetInformation:
         if self.bot_dict:
             self.bot = self.bot_dict['bot']
             self.chat_id = self.bot_dict['chat_id']
+        else:
+            self.bot = None
         self.browser = None
         self.find_parameters = FinderAddParameters()
         self.count_message_in_one_channel = 1
@@ -65,7 +67,7 @@ class HHGetInformation:
                     await self.bot.send_message(self.chat_id, f"Error: {ex}")
         self.browser.quit()
 
-    async def get_info(self):
+    async def get_browser(self):
         try:
             self.browser = webdriver.Chrome(
                 executable_path=chrome_driver_path,
@@ -73,6 +75,9 @@ class HHGetInformation:
             )
         except:
             self.browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+    async def get_info(self):
+        await self.get_browser()
         # -------------------- check what is current session --------------
         self.current_session = await self.helper_parser_site.get_name_session()
 

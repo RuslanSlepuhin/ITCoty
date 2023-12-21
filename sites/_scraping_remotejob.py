@@ -14,6 +14,7 @@ from helper_functions.helper_functions import edit_message, send_message, send_f
 from helper_functions.parser_find_add_parameters.parser_find_add_parameters import FinderAddParameters
 from report.report_variables import report_file_path
 from helper_functions import helper_functions as helper
+from sites.scraping_hh import HHGetInformation
 
 class RemoteJobGetInformation:
 

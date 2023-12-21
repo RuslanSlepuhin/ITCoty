@@ -62,6 +62,8 @@ class ShortsPoster:
 
                 if there_are_vacancies:
 
+                    await self.clear_unknown_tags()
+
                     self.short_session_name = await self.helper.get_short_session_name(prefix=profession)
                     self.db.write_short_session(self.short_session_name)
                     await self.bot_aiogram.send_message(message.chat.id, f"Shorts session: {self.short_session_name}")
@@ -308,13 +310,18 @@ class ShortsPoster:
                         if msg:
                             self.current_aggregator_id += 1
 
-                            self.db.update_table(
-                                table_name=self.variable.admin_database,
-                                field='sended_to_agregator',
-                                value=self.current_aggregator_id,
-                                param=f"WHERE id={vacancy['id']}",
-                                output_text=f'{n}:vacancy has been updated [field: sended_to_agregator]'
-                            )
+                            try:
+                                self.db.update_table(
+                                    table_name=self.variable.admin_database,
+                                    field='sended_to_agregator',
+                                    value=self.current_aggregator_id,
+                                    param=f"WHERE id={vacancy['id']}",
+                                    output_text=f'{n}:vacancy has been updated [field: sended_to_agregator] - {vacancy["id"]}'
+                                )
+                            except Exception as ex:
+                                print("error15", ex)
+                                pass
+
                             self.history_messages[vacancy['id']]['sended_to_agregator'] = self.current_aggregator_id
                             index_vacancy = self.sub_short_vacancies_dict['sorted_by_subs'][sub].index(vacancy)
                             self.sub_short_vacancies_dict['sorted_by_subs'][sub][index_vacancy]['id_admin_channel'] = self.current_aggregator_id
@@ -332,8 +339,12 @@ class ShortsPoster:
                     else:
                         print("vacancy has been not changed :)")
                         vacancy_name = vacancy['vacancy_text'].split("\n")[0].split(": ")[1]
-                        with open("./aggregator_vacancies_publisher.txt", 'a') as file:
-                            file.write(f"->{vacancy['id']}: {self.history_messages[vacancy['id']]['sended_to_agregator']}\n{vacancy_name} (vacancy_name)\n{self.history_messages[vacancy['id']]['vacancy']} (vacancy_history)\n")
+                        try:
+                            with open("./aggregator_vacancies_publisher.txt", 'a') as file:
+                                file.write(f"->{vacancy['id']}: {self.history_messages[vacancy['id']]['sended_to_agregator']}\n{vacancy_name} (vacancy_name)\n{self.history_messages[vacancy['id']]['vacancy']} (vacancy_history)\n")
+                        except Exception as ex:
+                            print('ALLOWED: error 16', ex)
+                            pass
 
                         index_vacancy = self.sub_short_vacancies_dict['sorted_by_subs'][sub].index(vacancy)
                         self.sub_short_vacancies_dict['sorted_by_subs'][sub][index_vacancy]['id_admin_channel'] = self.history_messages[vacancy['id']]['sended_to_agregator']
@@ -344,7 +355,7 @@ class ShortsPoster:
                             field='short_session_numbers',
                             value=self.short_session_name,
                             param=f"WHERE id={vacancy['id']}",
-                            output_text=f'{n}:vacancy has been updated [field: short_session_numbers]'
+                            output_text=f'{n}:vacancy has been updated [field: short_session_numbers] -> {vacancy["id"]}'
                         )
                         self.history_messages[vacancy['id']]['short_session_numbers'] = self.short_session_name
 
@@ -354,7 +365,7 @@ class ShortsPoster:
                         pass
 
                 except Exception as ex:
-                    print(ex, "error 1")
+                    print(ex, f"error 1 -> {vacancy['id']}")
                     pass
                 n += 1
                 await self.show_progress.show_the_progress(message=None, current_number=n, end_number=length)
@@ -570,7 +581,8 @@ class ShortsPoster:
                         for one_match in match:
                             html_text_list[counter] = re.sub(rf"{one_match}", one_match[1:-1], html_text_list[counter])
                     else:
-                        return False
+                        print('error 37: ', ex1, html_text_list[counter])
+                        html_text_list[counter] = re.sub(r"< ", "", html_text_list[counter])
 
                 else:
                     print('error 37: ', ex1)
@@ -676,3 +688,17 @@ class ShortsPoster:
 
 
 
+    async def clear_unknown_tags(self):
+        try:
+            for key in self.history_messages:
+                if self.history_messages[key]['body']:
+                    if re.findall(r"<+|>+", self.history_messages[key]['body']):
+                        print(self.history_messages[key]['body'])
+                        pass
+                        self.history_messages[key]['body'] = re.sub(r"<+|>+", "", self.history_messages[key]['body'])
+                        print(self.history_messages[key]['body'])
+                        pass
+        except Exception as ex:
+            print(ex)
+            pass
+        pass

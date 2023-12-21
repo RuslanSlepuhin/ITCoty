@@ -1,10 +1,12 @@
-from db_operations.scraping_db import DataBaseOperations
+import asyncio
 
-db = DataBaseOperations()
-# info = db.get_information_about_tables_and_fields()
-# print(info)
+from sites.scraping_epam_anywhere import EpamGetInformation
+from sites.scraping_hh import HHGetInformation
+from sites.scraping_hhkz import HHKzGetInformation
+from sites.scraping_ingamejob import IngameJobGetInformation
+from sites.scraping_careerjet import СareerjetGetInformation
 
-db.change_type_column(
-    list_table_name=['vacancies'],
-    name_and_type="profession TYPE VARCHAR (100)"
-)
+sparser = СareerjetGetInformation()
+asyncio.run(sparser.get_content())
+
+

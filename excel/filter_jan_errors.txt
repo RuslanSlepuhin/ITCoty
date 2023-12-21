@@ -1,1 +1,5 @@
-05-04-23 09:38
+05-04-23 09:38word = [Ii]nternship
+vacancy = None
+error = expected string or bytes-like object
+------------
+

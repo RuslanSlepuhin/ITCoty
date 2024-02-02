@@ -10,17 +10,21 @@ from webdriver_manager.chrome import ChromeDriverManager
 from db_operations.scraping_db import DataBaseOperations
 from helper_functions import helper_functions as helper
 from helper_functions.helper_functions import edit_message, send_message
-from helper_functions.parser_find_add_parameters.parser_find_add_parameters import \
-    FinderAddParameters
+from helper_functions.parser_find_add_parameters.parser_find_add_parameters import (
+    FinderAddParameters,
+)
 from settings.browser_settings import options
 from sites.write_each_vacancy_to_db import HelperSite_Parser
 from utils.additional_variables.additional_variables import (
-    admin_database, archive_database, sites_search_words)
+    admin_database,
+    archive_database,
+    sites_search_words,
+)
 
 
 class OttaGetInformation:
-    USERMAIL = "tema052008@yandex.ru"
-    PASSWORD = "gokfoC-1texpo-sumfyr"
+    USERMAIL = "vasia_stallion@mail.ru"
+    PASSWORD = "Vasia01010"
 
     def __init__(self, **kwargs):
 
@@ -195,7 +199,8 @@ class OttaGetInformation:
                     tags_list = soup.find(
                         "div", attrs={"data-testid": "job-technology-used"}
                     ).find_all("div")
-                    tags = ", ".join(tag.text for tag in tags_list)
+                    if len(tags_list) > 0:
+                        tags = ", ".join(tag.text for tag in tags_list)
                 except Exception as e:
                     print(f"error tags: {e}")
 

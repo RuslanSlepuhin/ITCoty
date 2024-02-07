@@ -1,6 +1,6 @@
 # for add in vacancy search in db tables
 import pandas
-from settings.dirs import DIR_EXCEL, DIR_REPORT,DIR_PATTERNS, DIR_UTILS, DIR_LOGS
+from settings.dirs import DIR_EXCEL, DIR_REPORT, DIR_PATTERNS, DIR_UTILS, DIR_LOGS
 
 admin_database = 'admin_last_session'
 archive_database = 'archive'
@@ -345,4 +345,3 @@ excel_name_courses = DIR_EXCEL / "courses.xlsx"
 fields_for_agregator_vacancy = ['vacancy', 'company', 'salary', 'job_type', 'city', 'english', 'experience', 'vacancy_url', 'title', 'body']
 sub_separator = "; "
 double_n_before_field = 'vacancy_url'
-

@@ -8,6 +8,7 @@ import os
 #
 config_keys = configparser.ConfigParser()
 config_keys.read("./settings/config_keys.ini")
+# Такого файла нет settings/config_keys.ini
 api_id = config_keys['Telegram']['api_id']
 api_hash = config_keys['Telegram']['api_hash']
 username = config_keys['Telegram']['username']

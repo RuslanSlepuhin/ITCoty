@@ -26,6 +26,7 @@ from db_operations.scraping_db import DataBaseOperations
 from helper_functions.cities_and_countries.cities_parser import CitiesAndCountries
 from sites.scraping_hhkz import HHKzGetInformation
 from sites.scraping_praca import PracaGetInformation
+from settings.dirs import DIR_LOGS, DIR_EXCEL, DIR_OTHERS
 from telegram_chats.scraping_telegramchats2 import WriteToDbMessages, main
 from telegram_chats.scraping_telegram_digest import DigestParser
 from sites.parsing_sites_runner import SitesParser, parser_sites
@@ -1012,7 +1013,7 @@ class InviteBot():
 
         @self.dp.message_handler(commands=['logs', 'log'])
         async def get_logs(message: types.Message):
-            path = './logs/logs.txt'
+            path = DIR_LOGS / "logs.txt"
             await self.send_file_to_user(message, path)
 
         @self.dp.message_handler(commands=['numbers_of_archive'])
@@ -3243,7 +3244,7 @@ class InviteBot():
                 print('got it')
             except:
                 try:
-                    await self.send_file_to_user(message, './other_operations/pr.txt', caption="It did not send excel so take txt logs")
+                    await self.send_file_to_user(message, DIR_OTHERS / 'pr.txt', caption="It did not send excel so take txt logs")
                 except:
                     await self.bot_aiogram.send_message(message.chat.id, f'Can\'t send the report file')
 
@@ -4095,7 +4096,7 @@ class InviteBot():
             await self.bot_aiogram.send_message(message.chat.id, "Level field was updated!")
 
         async def get_from_admin(message):
-            path = "./excel/vacancy_from_admin.txt"
+            path = DIR_EXCEL / "vacancy_from_admin.txt"
             with open(path, 'w', encoding='utf-8') as file:
                 file.write(f"")
 

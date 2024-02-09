@@ -1,3 +1,4 @@
+from settings.dirs import DIR_REPORT
 
 fields = {
     'parsing': ['link_current_vacancy', 'title', 'body', 'check_link', 'found_id_by_link', 'found_title',
@@ -9,7 +10,7 @@ fields = {
 }
 
 report_file_path = {
-    'parsing': './report/excel/parsing_report.xlsx',
-    'shorts': './report/excel/shorts_report.xlsx',
-    'digest': './report/excel/digest_report.xlsx'
+    'parsing': f'{DIR_REPORT / "excel" / "parsing_report.xlsx"}',
+    'shorts': f'{DIR_REPORT / "excel" / "shorts_report.xlsx"}',
+    'digest': f'{DIR_REPORT / "excel" / "digest_report.xlsx"}'
 }

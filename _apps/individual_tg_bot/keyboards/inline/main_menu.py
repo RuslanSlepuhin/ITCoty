@@ -12,4 +12,5 @@ def get_inline_menu():
     inline_keyboard.add(InlineKeyboardButton(text=text.start_survey, callback_data=text.start_survey))
     inline_keyboard.add(InlineKeyboardButton(text=text.notification, callback_data=text.notification))
     inline_keyboard.add(InlineKeyboardButton(text=text.user_profile, url="https://itcoty.ru/"))
+    inline_keyboard.add(InlineKeyboardButton(text=text.restart, callback_data=text.restart))
     return inline_keyboard

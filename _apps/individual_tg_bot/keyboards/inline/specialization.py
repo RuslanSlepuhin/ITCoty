@@ -125,4 +125,6 @@ def game_dev_button():
 def qa_button():
     """Кнопки специализации QA"""
     inline_keyboard = InlineKeyboardMarkup(row_width=3)
+    inline_keyboard.add(InlineKeyboardButton(text=text.manual, callback_data=text.manual))
+    inline_keyboard.add(InlineKeyboardButton(text=text.auto, callback_data=text.auto))
     return inline_keyboard

@@ -1,52 +1,43 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import (CallbackQuery, InlineKeyboardButton,
+                           InlineKeyboardMarkup)
 
 from _apps.individual_tg_bot import text
-from _apps.individual_tg_bot .keyboards.inline.level_button import level_button
+from _apps.individual_tg_bot.keyboards.inline.level_button import level_button
+from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import \
+    buttons_marketing
 
 
+async def marketing_specialization_callback(
+    query: CallbackQuery, state: FSMContext
+) -> None:
+    """Обработка callback для marketing направления"""
+    data = await state.get_data()
 
+    selected_specializations = data.get("selected_specializations", set())
 
-#@router.callback_query(F.data == text.seo)
-async def seo_callback(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка callback SEO"""
-    await query.message.answer(
-        text=f"Необходимо выбрать уровень владения {text.seo}",
-        reply_markup=level_button(),
-    )
+    if text.accept in query.data:
+        await query.message.answer(
+            text=f"Выбранные специализации: {', '.join(selected_specializations)}\nНеобходимо выбрать уровень владения",
+            reply_markup=level_button(),
+        )
+        return
 
+    if query.data in buttons_marketing:
+        selected_specializations.add(query.data)
 
-#@router.callback_query(F.data == text.copywriter)
-async def copywriter_callback(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка callback Copywriter"""
-    await query.message.answer(
-        text=f"Необходимо выбрать уровень владения {text.copywriter}",
-        reply_markup=level_button(),
-    )
+    await state.update_data(selected_specializations=selected_specializations)
 
+    updated_keyboard = InlineKeyboardMarkup()
+    for button_text, button_callback in buttons_marketing.items():
+        if button_callback not in selected_specializations:
+            updated_keyboard.add(
+                InlineKeyboardButton(text=button_text, callback_data=button_callback)
+            )
 
-#@router.callback_query(F.data == text.marketer)
-async def marketer_callback(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка callback Marketer"""
-    await query.message.answer(
-        text=f"Необходимо выбрать уровень владения {text.marketer}",
-        reply_markup=level_button(),
-    )
-
-
-#@router.callback_query(F.data == text.content_manager)
-async def content_manager_callback(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка callback Content manager"""
-    await query.message.answer(
-        text=f"Необходимо выбрать уровень владения {text.content_manager}",
-        reply_markup=level_button(),
-    )
-
-
-#@router.callback_query(F.data == text.media_buyer)
-async def media_buyer_callback(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка callback Media buyer"""
-    await query.message.answer(
-        text=f"Необходимо выбрать уровень владения {text.media_buyer}",
-        reply_markup=level_button(),
-    )
+    if query.data in selected_specializations:
+        await query.message.answer(
+            text=f"Выбранные специализации: {', '.join(selected_specializations)}",
+            reply_markup=updated_keyboard,
+        )
+        return

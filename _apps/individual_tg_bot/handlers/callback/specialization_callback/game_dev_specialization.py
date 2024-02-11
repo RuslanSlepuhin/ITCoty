@@ -1,26 +1,43 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import (CallbackQuery, InlineKeyboardButton,
+                           InlineKeyboardMarkup)
 
 from _apps.individual_tg_bot import text
-
 from _apps.individual_tg_bot.keyboards.inline.level_button import level_button
+from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import \
+    buttons_game_dev
 
 
+async def game_dev_specialization_callback(
+    query: CallbackQuery, state: FSMContext
+) -> None:
+    """Обработка callback для game_dev направления"""
+    data = await state.get_data()
 
+    selected_specializations = data.get("selected_specializations", set())
 
-#@router.callback_query(F.data == text.unity)
-async def unity_callback(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка callback Unity"""
-    await query.message.answer(
-        text=f"Необходимо выбрать уровень владения {text.unity}",
-        reply_markup=level_button(),
-    )
+    if text.accept in query.data:
+        await query.message.answer(
+            text=f"Выбранные специализации: {', '.join(selected_specializations)}\nНеобходимо выбрать уровень владения",
+            reply_markup=level_button(),
+        )
+        return
 
+    if query.data in buttons_game_dev:
+        selected_specializations.add(query.data)
 
-#@router.callback_query(F.data == text.game_designer)
-async def game_designer_callback(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка callback Game designer"""
-    await query.message.answer(
-        text=f"Необходимо выбрать уровень владения {text.game_designer}",
-        reply_markup=level_button(),
-    )
+    await state.update_data(selected_specializations=selected_specializations)
+
+    updated_keyboard = InlineKeyboardMarkup()
+    for button_text, button_callback in buttons_game_dev.items():
+        if button_callback not in selected_specializations:
+            updated_keyboard.add(
+                InlineKeyboardButton(text=button_text, callback_data=button_callback)
+            )
+
+    if query.data in selected_specializations:
+        await query.message.answer(
+            text=f"Выбранные специализации: {', '.join(selected_specializations)}",
+            reply_markup=updated_keyboard,
+        )
+        return

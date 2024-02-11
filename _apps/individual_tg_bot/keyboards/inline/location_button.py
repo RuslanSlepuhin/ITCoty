@@ -1,14 +1,13 @@
+from _apps.individual_tg_bot import text
 from aiogram.types.inline_keyboard import (InlineKeyboardButton,
                                            InlineKeyboardMarkup)
-
-from _apps.individual_tg_bot import text
 
 location_button_dict = {
     text.russia: text.russia,
     text.belarus: text.belarus,
     text.europe: text.europe,
     text.other_location: text.other_location,
-    text.accept: text.accept,
+    text.accept_location: text.accept_location,
 }
 
 

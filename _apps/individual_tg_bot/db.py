@@ -1,5 +1,6 @@
-from typing import Any, Dict
 import logging
+from typing import Any, Dict
+
 import asyncpg
 
 
@@ -20,7 +21,6 @@ class AsyncPGDatabase:
         if self.connection:
             await self.connection.close()
             self.logger.info("Disconnected from database")
-
 
     async def create_db(self) -> None:
         try:
@@ -52,7 +52,9 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             self.logger.error(f"Error creating table: {e}")
 
-    async def insert_data(self, user_id, direction, specialization, level, location, work_format, keyword):
+    async def insert_data(
+        self, user_id, direction, specialization, level, location, work_format, keyword
+    ):
         if not self.connection:
             await self.connect()
 
@@ -60,7 +62,13 @@ class AsyncPGDatabase:
             await self.connection.execute(
                 "INSERT INTO user_requests (user_id, direction, specialization, level, location, work_format, keywords)"
                 " VALUES ($1, $2, $3, $4, $5, $6, $7)",
-                user_id, direction, specialization, level, location, work_format, keyword
+                user_id,
+                direction,
+                specialization,
+                level,
+                location,
+                work_format,
+                keyword,
             )
             logging.info("Data inserted successfully")
         except asyncpg.PostgresError as e:
@@ -77,5 +85,3 @@ class AsyncPGDatabase:
             logging.info("Data deleted successfully")
         except asyncpg.PostgresError as e:
             logging.error(f"Error deleting data: {e}")
-
-

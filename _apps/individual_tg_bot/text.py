@@ -1,20 +1,41 @@
 greet = "Привет, {name},  я ITCoty бот который поможет вам найти работу в IT. Нажмите 'найти вакансии' и выберете желаемые параметры для подбора."
 menu = "Меню фильтра вакансий"
 info = 'Я ITCoty бот который поможет вам найти работу в IT,\nДля прохождения опроса команда "start" \n Для вывода меню фильра вакансий команда "menu".'
-direction = "Необходимо выбрать IT направление"
+
 get_vacancy = "Поиск вакансий по базе"
-sent_first_question = "Привет! Давайте начнем заполнение данных. Как вас зовут?"
 get_notification = "Необходимо выбрать подходящую периодичность"
 
 create_table = """CREATE TABLE tg_bot ( user_id bigint ,name varchar(255), email varchar(255),direction varchar(255), specialization varchar(255),location varchar(255),salary_rate varchar(255),work_format varchar(255),keywords varchar(255),CV_url varchar(255)) """
-skip_continue = "Skip & Continue"
+# Фильтр вакансий
+direction = "Необходимо выбрать IT направление"
+specialization = "Выберите специализацию для направления"
+chosen_specialization = "Выбранные специализации:"
 
+level = "Необходимо выбрать уровень владения"
+chosen_level = "Выбранный уровень владения:"
+
+location = "Интересующая локация"
+chosen_location = "Выбранная локация:"
+
+work_format = "Формат работы"
+chosen_format = "Выбранный формат работы:"
+
+add_info = "Ключевое слово:"
+# Доп. кнопки
+skip_continue = "Пропустить"
+accept = "Сохранить и перейти к уровню"
+accept_level = "Сохранить и перейти к локации"
+accept_location = "Перейти к формату работы"
+accept_format = "Перейти к доп. информации"
+choose_button = "Выбранная кнопка"
+thanks_text = "Спасибо за ответы!"
 # Главное меню
 vacancy_filter = "Фильтр вакансий"
 start_survey = "Пройти опрос"
 notification = "Периодичность уведомлений"
 user_profile = "Профиль на сайте"
 restart = "Прекращение выдачи"
+
 # Направления
 design = "Design"
 # Специализации 'Design'
@@ -88,8 +109,9 @@ game_designer = "Game designer"
 
 qa = "QA"
 # Специализации QA
-manual = 'Manual'
-auto = 'Auto'
+manual = "Manual"
+auto = "Auto"
+
 # Уровень по вакансиям
 trainee = "Trainee"
 junior = "Junior"
@@ -98,9 +120,13 @@ senior = "Senior"
 tech_lead = "Lead"
 
 # Формат работы
-remote = "Remote"
-office = "Office"
-hybrid = "Hybrid"
-part_time = "Part_time"
-full_time = "Full_time"
-any_format = "Any"
+remote = "Удаленно"
+office = "Офис"
+hybrid = "Гибрид"
+any_format = "Любой"
+
+# Локации
+russia = "Россия"
+belarus = "Беларусь"
+europe = "Европа"
+other_location = "Другое"

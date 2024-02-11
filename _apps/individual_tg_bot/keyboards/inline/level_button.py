@@ -1,7 +1,6 @@
+from _apps.individual_tg_bot import text
 from aiogram.types.inline_keyboard import (InlineKeyboardButton,
                                            InlineKeyboardMarkup)
-
-from _apps.individual_tg_bot import text
 
 level_button_dict = {
     text.trainee: text.trainee,

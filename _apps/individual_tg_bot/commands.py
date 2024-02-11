@@ -8,6 +8,5 @@ async def set_default_commands(bot):
             types.BotCommand(command="menu", description="Меню фильтра вакансий"),
             types.BotCommand(command="cancel", description="Отмена"),
             types.BotCommand(command="info", description="Информация о боте"),
-
         ]
     )

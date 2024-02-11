@@ -1,11 +1,10 @@
-from aiogram.dispatcher import FSMContext
-from aiogram.types import (CallbackQuery, InlineKeyboardButton,
-                           InlineKeyboardMarkup)
-
 from _apps.individual_tg_bot import text
 from _apps.individual_tg_bot.keyboards.inline.level_button import level_button
 from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import \
     buttons_backend
+from aiogram.dispatcher import FSMContext
+from aiogram.types import (CallbackQuery, InlineKeyboardButton,
+                           InlineKeyboardMarkup)
 
 
 async def backend_specialization_callback(
@@ -18,7 +17,7 @@ async def backend_specialization_callback(
 
     if text.accept in query.data:
         await query.message.answer(
-            text=f"Выбранные специализации: {', '.join(selected_specializations)}\nНеобходимо выбрать уровень владения",
+            text=f"{text.chosen_specialization} {', '.join(selected_specializations)}\n{text.level}",
             reply_markup=level_button(),
         )
         return
@@ -37,7 +36,7 @@ async def backend_specialization_callback(
 
     if query.data in selected_specializations:
         await query.message.answer(
-            text=f"Выбранные специализации: {', '.join(selected_specializations)}",
+            text=f"{text.chosen_specialization} {', '.join(selected_specializations)}",
             reply_markup=updated_keyboard,
         )
         return

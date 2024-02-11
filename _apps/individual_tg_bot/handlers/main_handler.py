@@ -1,5 +1,3 @@
-from aiogram import Dispatcher
-
 from _apps.individual_tg_bot.handlers.callback.direction_callback import (
     direction_analyst_callback, direction_backend_callback,
     direction_design_callback, direction_dev_ops_callback,
@@ -8,6 +6,12 @@ from _apps.individual_tg_bot.handlers.callback.direction_callback import (
     direction_marketing_callback, direction_mobile_callback,
     direction_product_project_manager_callback, direction_qa_callback,
     direction_sales_callback, direction_support_callback)
+from _apps.individual_tg_bot.handlers.callback.key_word_callback import \
+    key_word_handler
+from _apps.individual_tg_bot.handlers.callback.level_callback import \
+    level_callback_handler
+from _apps.individual_tg_bot.handlers.callback.location_callback import \
+    location_callback_handler
 from _apps.individual_tg_bot.handlers.callback.menu_callback import \
     get_vacancy_filter
 from _apps.individual_tg_bot.handlers.callback.specialization_callback.analyst_specialization import \
@@ -38,14 +42,32 @@ from _apps.individual_tg_bot.handlers.callback.specialization_callback.sales_spe
     sales_specialization_callback
 from _apps.individual_tg_bot.handlers.callback.specialization_callback.support_specialization import \
     support_specialization_callback
-from _apps.individual_tg_bot.handlers.command_router import (
-    bot_info, cancel_handler, get_menu, start_handler)
+from _apps.individual_tg_bot.handlers.callback.work_format_callback import \
+    work_format_callback_handler
+from _apps.individual_tg_bot.handlers.command_router import (bot_info,
+                                                             cancel_handler,
+                                                             get_menu,
+                                                             start_handler)
+from _apps.individual_tg_bot.keyboards.inline.level_button import \
+    level_button_dict
+from _apps.individual_tg_bot.keyboards.inline.location_button import \
+    location_button_dict
 from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import *
+from _apps.individual_tg_bot.keyboards.inline.work_format import \
+    work_format_dict
+from aiogram import Dispatcher
 
 
 class Handlers:
     def __init__(self, dp: Dispatcher) -> None:
         self.dp = dp
+        self.register_message_handlers()
+        self.register_direction_handlers()
+        self.register_specializations_handlers()
+        self.register_level_handler()
+        self.register_location_handler()
+        self.register_work_format_handler()
+        self.register_keyword_handler()
 
     def register_message_handlers(self):
         """Регистрация message handlers"""
@@ -143,3 +165,21 @@ class Handlers:
         self.dp.register_callback_query_handler(
             support_specialization_callback, text=buttons_support
         )
+
+    def register_level_handler(self):
+        self.dp.register_callback_query_handler(
+            level_callback_handler, text=level_button_dict
+        )
+
+    def register_location_handler(self):
+        self.dp.register_callback_query_handler(
+            location_callback_handler, text=location_button_dict
+        )
+
+    def register_work_format_handler(self):
+        self.dp.register_callback_query_handler(
+            work_format_callback_handler, text=work_format_dict
+        )
+
+    def register_keyword_handler(self):
+        self.dp.register_message_handler(key_word_handler, state="*")

@@ -1,21 +1,18 @@
-from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardRemove
-
 from _apps.individual_tg_bot import text
-from _apps.individual_tg_bot.keyboards.inline.work_format import work_format_dict
-from _apps.individual_tg_bot.keyboards.inline.location_button import location_button
+from _apps.individual_tg_bot.keyboards.inline.work_format import \
+    work_format_dict
+from aiogram.dispatcher import FSMContext
+from aiogram.types import (CallbackQuery, InlineKeyboardButton,
+                           InlineKeyboardMarkup, ReplyKeyboardRemove)
 
 
-async def work_format_callback_handler(
-    query: CallbackQuery, state: FSMContext
-) -> None:
-    """Обработка callback для формата работы """
+async def work_format_callback_handler(query: CallbackQuery, state: FSMContext) -> None:
+    """Обработка callback для формата работы"""
     data = await state.get_data()
 
     selected_work_format = data.get("selected_work_format", set())
 
     if text.accept_format in query.data:
-        print(data)
         await query.message.answer(
             text=f"{text.chosen_format} {', '.join(selected_work_format)}\n{text.add_info}",
             reply_markup=ReplyKeyboardRemove(),
@@ -36,7 +33,7 @@ async def work_format_callback_handler(
 
     if query.data in selected_work_format:
         await query.message.answer(
-            text=f"{text.chosen_level} {', '.join(selected_work_format)}",
+            text=f"{text.chosen_format} {', '.join(selected_work_format)}",
             reply_markup=updated_keyboard,
         )
         return

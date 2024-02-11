@@ -1,13 +1,13 @@
+from _apps.individual_tg_bot import text
 from aiogram.types.inline_keyboard import (InlineKeyboardButton,
                                            InlineKeyboardMarkup)
-
-from _apps.individual_tg_bot import text
 
 work_format_dict = {
     text.remote: text.remote,
     text.office: text.office,
     text.hybrid: text.hybrid,
     text.any_format: text.any_format,
+    text.accept_format: text.accept_format,
 }
 
 

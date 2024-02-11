@@ -1,7 +1,6 @@
+from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import *
 from aiogram.types.inline_keyboard import (InlineKeyboardButton,
                                            InlineKeyboardMarkup)
-
-from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import *
 
 
 def design_button():

@@ -1,4 +1,3 @@
-
 from _apps.individual_tg_bot import text
 
 buttons_design = {
@@ -7,7 +6,7 @@ buttons_design = {
     text.ux_ui: text.ux_ui,
     text.illustrator: text.illustrator,
     text.graphic: text.graphic,
-    text.accept: text.accept
+    text.accept: text.accept,
 }
 
 buttons_backend = {
@@ -18,8 +17,8 @@ buttons_backend = {
     text.c_plus_plus: text.c_plus_plus,
     text.c_sharp: text.c_sharp,
     text.dot_net: text.dot_net,
-    text.golang: text.c_sharp,
-    text.accept: text.c_sharp,
+    text.golang: text.golang,
+    text.accept: text.accept,
 }
 
 buttons_analyst = {
@@ -88,11 +87,3 @@ buttons_qa = {
     text.auto: text.auto,
     text.accept: text.accept,
 }
-
-
-
-
-
-
-
-

@@ -1,7 +1,6 @@
-
 from aiogram.dispatcher import FSMContext
-
 from aiogram.types import Message
+
 from _apps.individual_tg_bot import text
 from _apps.individual_tg_bot.keyboards.inline.main_menu import get_inline_menu
 
@@ -24,6 +23,7 @@ async def cancel_handler(state: FSMContext) -> None:
     current_state = await state.get_state()
     if current_state is None:
         return
+
 
 async def bot_info(message: Message):
     """Обработка команды info"""

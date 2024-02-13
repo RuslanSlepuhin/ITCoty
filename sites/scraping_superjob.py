@@ -71,7 +71,7 @@ class SuperJobGetInformation:
         self.browser.quit()
 
     async def get_info(self):
-        self.browser = webdriver.Chrome(options=options)
+        self.browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         # -------------------- check what is current session --------------
         self.current_session = await self.helper_parser_site.get_name_session()
 

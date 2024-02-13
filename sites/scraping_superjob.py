@@ -147,7 +147,7 @@ class SuperJobGetInformation:
                 if found_vacancy:
                     vacancy = ''
                     try:
-                        vacancy = soup.find("h1", "_1gB-h h9XuZ _2qyq0 _3t5Je _3TptJ _2C8nO _2L4SY").get_text()
+                        vacancy = soup.find("h1", class_="_1gB-h h9XuZ _2qyq0 _3t5Je _3TptJ _2C8nO _2L4SY").get_text()
                     except Exception as e:
                         pass
 

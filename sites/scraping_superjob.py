@@ -82,8 +82,9 @@ class SuperJobGetInformation:
             for self.page_number in range(1, till):
                 try:
                     if self.bot_dict:
-                        await self.bot.send_message(self.chat_id, f'https://www.superjob.ru/vacancy/search/?keywords={self.word}&remote_work_binary=0&geo%5Bc%5D%5B0%5D=1&noGeo=1&page={self.page_number}',
-                                              disable_web_page_preview=True)
+                        await self.bot.send_message(self.chat_id,
+                                                    f'https://www.superjob.ru/vacancy/search/?keywords={self.word}&remote_work_binary=0&geo%5Bc%5D%5B0%5D=1&noGeo=1&page={self.page_number}',
+                                                    disable_web_page_preview=True)
                     self.browser.get(
                         f'https://www.superjob.ru/vacancy/search/?keywords={self.word}&remote_work_binary=0&geo%5Bc%5D%5B0%5D=1&noGeo=1&page={self.page_number}')
                     self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -102,7 +103,9 @@ class SuperJobGetInformation:
 
         if self.list_links:
             if self.bot_dict:
-                self.current_message = await self.bot.send_message(self.chat_id, f'superjob.ru:\nПо слову {self.word} найдено {len(self.list_links)} вакансий на странице {self.page_number}', disable_web_page_preview=True)
+                self.current_message = await self.bot.send_message(self.chat_id,
+                                                                   f'superjob.ru:\nПо слову {self.word} найдено {len(self.list_links)} вакансий на странице {self.page_number}',
+                                                                   disable_web_page_preview=True)
             # --------------------- LOOP -------------------------
             self.written_vacancies = 0
             self.rejected_vacancies = 0

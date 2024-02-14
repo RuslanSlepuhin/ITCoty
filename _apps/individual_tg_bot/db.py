@@ -74,6 +74,19 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             logging.error(f"Error inserting data: {e}")
 
+    async def vacancy(self):
+        if not self.connection:
+            await self.connect()
+
+        try:
+            result = await self.connection.execute(
+                "SELECT * FROM  vacancies LIMIT 1"
+            )
+            return await result.fetchall()
+           # logging.info("Data inserted successfully")
+        except asyncpg.PostgresError as e:
+            logging.error(f"Error inserting data: {e}")
+
     async def delete_data(self, condition_column, condition_value):
         if not self.connection:
             await self.connect()

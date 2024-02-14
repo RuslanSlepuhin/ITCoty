@@ -1,11 +1,15 @@
 from typing import Any, Dict
-
+import asyncio
 from _apps.individual_tg_bot.db import AsyncPGDatabase
 from _apps.individual_tg_bot.settings import DB_URL
 from aiogram.types import Message
 
 db = AsyncPGDatabase(DB_URL)
-
+""" Колонки в таблице vacancies profession:direction, tags:specialization, level:level, job_type:work_format, keyword:body"""
+async def main():
+    result = await db.vacancy()
+    print(result)
+asyncio.run(main())
 
 async def show_summary(message: Message, data: Dict) -> None:
     result = {

@@ -120,10 +120,10 @@ senior = "Senior"
 tech_lead = "Lead"
 
 # Формат работы
-remote = "Удаленно"
-office = "Офис"
-hybrid = "Гибрид"
-any_format = "Любой"
+remote = "remote"
+office = "office"
+hybrid = "flexible"
+any_format = "fulltime"
 
 # Локации
 russia = "Россия"

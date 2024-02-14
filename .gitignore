@@ -12,3 +12,4 @@ __pycache__/
 /__backup__/
 /settings/config_keys.ini
 .vscode
+try.py

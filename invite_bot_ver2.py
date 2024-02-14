@@ -429,6 +429,8 @@ class InviteBot():
                     df = pd.DataFrame(result_dict)
                     path = f'./excel/excel/{table}_vacancies.xlsx'
                     df.to_excel(path, sheet_name='Sheet1')
+                    # Эта команда создает excel файл с таким именем,
+                    # но папка excel/excel не существует. Будет ошибка.
                     print('got it')
                     await self.send_file_to_user(message, path)
 

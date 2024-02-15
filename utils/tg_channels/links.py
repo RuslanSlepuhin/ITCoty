@@ -125,6 +125,7 @@ list_links = [
     'https://t.me/aplaywork',
     'https://t.me/jobzilla_ua',
     'https://t.me/workforukrainianas',
+    'https://t.me/workwithnazrin',
 ]
 
 digest_links = [

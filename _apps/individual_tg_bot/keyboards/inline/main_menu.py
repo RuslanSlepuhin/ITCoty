@@ -11,9 +11,6 @@ def get_inline_menu():
         )
     )
     inline_keyboard.add(
-        InlineKeyboardButton(text=text.start_survey, callback_data=text.start_survey)
-    )
-    inline_keyboard.add(
         InlineKeyboardButton(text=text.notification, callback_data=text.notification)
     )
     inline_keyboard.add(

@@ -16,11 +16,13 @@ async def get_menu(msg: Message) -> None:
     await msg.answer(text.menu, reply_markup=get_inline_menu())
 
 
-async def cancel_handler(state: FSMContext) -> None:
+async def cancel_handler(msg: Message, state: FSMContext) -> None:
     """Обработка команды cancel"""
-    current_state = await state.get_state()
-    if current_state is None:
-        return
+
+    await state.finish()
+    await msg.answer(
+        text.repeat, reply_markup=get_inline_menu()
+    )
 
 
 async def bot_info(message: Message):

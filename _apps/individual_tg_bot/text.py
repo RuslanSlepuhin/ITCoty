@@ -113,7 +113,6 @@ manual = "Manual"
 auto = "Auto"
 
 # Уровень по вакансиям
-trainee = "Trainee"
 junior = "Junior"
 middle = "Middle"
 senior = "Senior"

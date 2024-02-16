@@ -3,7 +3,6 @@ from aiogram.types.inline_keyboard import (InlineKeyboardButton,
                                            InlineKeyboardMarkup)
 
 level_button_dict = {
-    text.trainee: text.trainee,
     text.junior: text.junior,
     text.middle: text.middle,
     text.senior: text.senior,

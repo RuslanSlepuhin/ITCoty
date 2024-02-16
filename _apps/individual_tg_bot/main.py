@@ -18,8 +18,7 @@ Handlers(dp)
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     loop = asyncio.new_event_loop()
-
+    loop.run_until_complete(set_default_commands(bot))
+    loop.run_until_complete(bot.delete_webhook(drop_pending_updates=True))
     dp.filters_factory.bind(Command)
-    loop.create_task(set_default_commands(bot))
-    loop.create_task(bot.delete_webhook(drop_pending_updates=True))
     executor.start_polling(dp, skip_updates=True)

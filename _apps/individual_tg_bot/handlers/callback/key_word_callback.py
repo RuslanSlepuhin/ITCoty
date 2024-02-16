@@ -1,7 +1,7 @@
 from _apps.individual_tg_bot import text
 from _apps.individual_tg_bot.service import show_summary
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 
 async def key_word_handler(
@@ -11,7 +11,12 @@ async def key_word_handler(
     """Обработка ключевого слова"""
 
     await state.update_data(keyword=message.text)
-    await message.answer(text=text.thanks_text, reply_markup=ReplyKeyboardRemove())
     data = await state.get_data()
+    base_url = "http://127.0.0.1:5000/user_requests_vacancies"
+    link = base_url + "?" + "&".join([f"{key}={value}" for key, value in data.items()])
+    keyboard = InlineKeyboardMarkup()
+    keyboard.add(InlineKeyboardButton("Перейти", url=link))
+    await message.answer(text=text.thanks_text, reply_markup=keyboard)
     await show_summary(message=message, data=data)
+
     await state.finish()

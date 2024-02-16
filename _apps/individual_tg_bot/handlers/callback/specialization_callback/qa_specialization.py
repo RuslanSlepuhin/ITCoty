@@ -1,10 +1,8 @@
 from _apps.individual_tg_bot import text
 from _apps.individual_tg_bot.keyboards.inline.level_button import level_button
-from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import \
-    buttons_qa
+from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import buttons_qa
 from aiogram.dispatcher import FSMContext
-from aiogram.types import (CallbackQuery, InlineKeyboardButton,
-                           InlineKeyboardMarkup)
+from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 
 async def qa_specialization_callback(query: CallbackQuery, state: FSMContext) -> None:

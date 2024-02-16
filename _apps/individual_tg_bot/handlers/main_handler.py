@@ -1,60 +1,100 @@
+import _apps.individual_tg_bot.text as text
 from _apps.individual_tg_bot.handlers.callback.direction_callback import (
-    direction_analyst_callback, direction_backend_callback,
-    direction_design_callback, direction_dev_ops_callback,
-    direction_frontend_callback, direction_fullstack_callback,
-    direction_game_dev_callback, direction_hr_callback,
-    direction_marketing_callback, direction_mobile_callback,
-    direction_product_project_manager_callback, direction_qa_callback,
-    direction_sales_callback, direction_support_callback)
-from _apps.individual_tg_bot.handlers.callback.key_word_callback import \
-    key_word_handler
-from _apps.individual_tg_bot.handlers.callback.level_callback import \
-    level_callback_handler
-from _apps.individual_tg_bot.handlers.callback.location_callback import \
-    location_callback_handler
-from _apps.individual_tg_bot.handlers.callback.menu_callback import \
-    get_vacancy_filter
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.analyst_specialization import \
-    analyst_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.backend_specialization import \
-    backend_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.design_specialization import \
-    design_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.dev_ops_specialization import \
-    dev_ops_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.frontend_specialization import \
-    frontend_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.fullstack_specialization import \
-    fullstack_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.game_dev_specialization import \
-    game_dev_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.hr_specialization import \
-    hr_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.marketing_specialization import \
-    marketing_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.mobile_specialization import \
-    mobile_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.product_project_manager_specialization import \
-    product_project_manager_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.qa_specialization import \
-    qa_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.sales_specialization import \
-    sales_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.specialization_callback.support_specialization import \
-    support_specialization_callback
-from _apps.individual_tg_bot.handlers.callback.work_format_callback import \
-    work_format_callback_handler
-from _apps.individual_tg_bot.handlers.command_router import (bot_info,
-                                                             cancel_handler,
-                                                             get_menu,
-                                                             start_handler)
-from _apps.individual_tg_bot.keyboards.inline.level_button import \
-    level_button_dict
-from _apps.individual_tg_bot.keyboards.inline.location_button import \
-    location_button_dict
-from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import *
-from _apps.individual_tg_bot.keyboards.inline.work_format import \
-    work_format_dict
+    direction_analyst_callback,
+    direction_backend_callback,
+    direction_design_callback,
+    direction_dev_ops_callback,
+    direction_frontend_callback,
+    direction_fullstack_callback,
+    direction_game_dev_callback,
+    direction_hr_callback,
+    direction_marketing_callback,
+    direction_mobile_callback,
+    direction_product_project_manager_callback,
+    direction_qa_callback,
+    direction_sales_callback,
+    direction_support_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.key_word_callback import key_word_handler
+from _apps.individual_tg_bot.handlers.callback.level_callback import (
+    level_callback_handler,
+)
+from _apps.individual_tg_bot.handlers.callback.location_callback import (
+    location_callback_handler,
+)
+from _apps.individual_tg_bot.handlers.callback.menu_callback import get_vacancy_filter
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.analyst_specialization import (
+    analyst_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.backend_specialization import (
+    backend_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.design_specialization import (
+    design_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.dev_ops_specialization import (
+    dev_ops_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.frontend_specialization import (
+    frontend_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.fullstack_specialization import (
+    fullstack_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.game_dev_specialization import (
+    game_dev_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.hr_specialization import (
+    hr_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.marketing_specialization import (
+    marketing_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.mobile_specialization import (
+    mobile_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.product_project_manager_specialization import (
+    product_project_manager_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.qa_specialization import (
+    qa_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.sales_specialization import (
+    sales_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.specialization_callback.support_specialization import (
+    support_specialization_callback,
+)
+from _apps.individual_tg_bot.handlers.callback.work_format_callback import (
+    work_format_callback_handler,
+)
+from _apps.individual_tg_bot.handlers.command_router import (
+    bot_info,
+    cancel_handler,
+    get_menu,
+    start_handler,
+)
+from _apps.individual_tg_bot.keyboards.inline.level_button import level_button_dict
+from _apps.individual_tg_bot.keyboards.inline.location_button import (
+    location_button_dict,
+)
+from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import (
+    buttons_analyst,
+    buttons_backend,
+    buttons_design,
+    buttons_dev_ops,
+    buttons_frontend,
+    buttons_fullstack,
+    buttons_game_dev,
+    buttons_hr,
+    buttons_marketing,
+    buttons_mobile,
+    buttons_product_project_manager,
+    buttons_qa,
+    buttons_sales,
+    buttons_support,
+)
+from _apps.individual_tg_bot.keyboards.inline.work_format import work_format_dict
 from aiogram import Dispatcher
 
 

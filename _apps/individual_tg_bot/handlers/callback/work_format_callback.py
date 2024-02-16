@@ -1,9 +1,12 @@
 from _apps.individual_tg_bot import text
-from _apps.individual_tg_bot.keyboards.inline.work_format import \
-    work_format_dict
+from _apps.individual_tg_bot.keyboards.inline.work_format import work_format_dict
 from aiogram.dispatcher import FSMContext
-from aiogram.types import (CallbackQuery, InlineKeyboardButton,
-                           InlineKeyboardMarkup, ReplyKeyboardRemove)
+from aiogram.types import (
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardRemove,
+)
 
 
 async def work_format_callback_handler(query: CallbackQuery, state: FSMContext) -> None:

@@ -1,11 +1,10 @@
 from _apps.individual_tg_bot import text
-from _apps.individual_tg_bot.keyboards.inline.location_button import \
-    location_button_dict
-from _apps.individual_tg_bot.keyboards.inline.work_format import \
-    work_format_button
+from _apps.individual_tg_bot.keyboards.inline.location_button import (
+    location_button_dict,
+)
+from _apps.individual_tg_bot.keyboards.inline.work_format import work_format_button
 from aiogram.dispatcher import FSMContext
-from aiogram.types import (CallbackQuery, InlineKeyboardButton,
-                           InlineKeyboardMarkup)
+from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 
 async def location_callback_handler(query: CallbackQuery, state: FSMContext) -> None:

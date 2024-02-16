@@ -1,5 +1,4 @@
 import logging
-from typing import Any, Dict
 
 import asyncpg
 
@@ -37,7 +36,7 @@ class AsyncPGDatabase:
                 await self.connect()
             await self.connection.execute(
                 """CREATE TABLE IF NOT EXISTS user_requests
-                ( 
+                (
                     id SERIAL PRIMARY KEY,
                     user_id BIGINT,
                     direction VARCHAR(255),
@@ -52,7 +51,7 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             self.logger.error(f"Error creating table: {e}")
 
-    async def insert_data(
+    async def insert_into_data(
         self, user_id, direction, specialization, level, location, work_format, keyword
     ):
         if not self.connection:
@@ -74,16 +73,46 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             logging.error(f"Error inserting data: {e}")
 
+    async def receive_vacancy(
+        self,
+        direction: str,
+        specialization: str,
+        level: str,
+        location: str,
+        work_format: str,
+        keyword: str,
+    ):
+        if not self.connection:
+            await self.connect()
+
+        try:
+            query = """
+                        SELECT * FROM vacancies
+                        WHERE profession LIKE $1
+                        AND profession LIKE $2
+                        AND job_type LIKE $3
+                        AND (body LIKE $4 OR body LIKE $5);
+                    """
+            vacancies = await self.connection.fetch(
+                query,
+                f"%{level.lower()}%",
+                f"%{direction.lower()}%",
+                f"%{work_format.lower()}%",
+                f"%{specialization[1:]}%",
+                f"%{keyword[1:]}%",
+            )
+            result = [dict(row) for row in vacancies]
+            return result
+        except asyncpg.PostgresError as e:
+            logging.error(f"Error select data: {e}")
+
     async def vacancy(self):
         if not self.connection:
             await self.connect()
 
         try:
-            result = await self.connection.execute(
-                "SELECT * FROM  vacancies LIMIT 1"
-            )
+            result = await self.connection.execute("SELECT * FROM  vacancies LIMIT 1")
             return await result.fetchall()
-           # logging.info("Data inserted successfully")
         except asyncpg.PostgresError as e:
             logging.error(f"Error inserting data: {e}")
 

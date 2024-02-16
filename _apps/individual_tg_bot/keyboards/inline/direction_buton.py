@@ -1,6 +1,5 @@
 from _apps.individual_tg_bot import text
-from aiogram.types.inline_keyboard import (InlineKeyboardButton,
-                                           InlineKeyboardMarkup)
+from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def get_direction_button():

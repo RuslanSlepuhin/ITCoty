@@ -1,6 +1,20 @@
-from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import *
-from aiogram.types.inline_keyboard import (InlineKeyboardButton,
-                                           InlineKeyboardMarkup)
+from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import (
+    buttons_analyst,
+    buttons_backend,
+    buttons_design,
+    buttons_dev_ops,
+    buttons_frontend,
+    buttons_fullstack,
+    buttons_game_dev,
+    buttons_hr,
+    buttons_marketing,
+    buttons_mobile,
+    buttons_product_project_manager,
+    buttons_qa,
+    buttons_sales,
+    buttons_support,
+)
+from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def design_button():

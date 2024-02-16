@@ -1,10 +1,10 @@
 from _apps.individual_tg_bot import text
 from _apps.individual_tg_bot.keyboards.inline.level_button import level_button
-from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import \
-    buttons_game_dev
+from _apps.individual_tg_bot.keyboards.inline.specializations.buttons import (
+    buttons_game_dev,
+)
 from aiogram.dispatcher import FSMContext
-from aiogram.types import (CallbackQuery, InlineKeyboardButton,
-                           InlineKeyboardMarkup)
+from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 
 async def game_dev_specialization_callback(

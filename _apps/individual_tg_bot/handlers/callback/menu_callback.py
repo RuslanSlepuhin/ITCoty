@@ -5,7 +5,20 @@ from _apps.individual_tg_bot.keyboards.inline.direction_buton import (
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
+from _apps.individual_tg_bot.keyboards.inline.notifications import notification_button
 
-async def get_vacancy_filter(query: CallbackQuery, state: FSMContext) -> None:
-    """Обработка start_survey callback"""
+
+async def get_vacancy_filter(query: CallbackQuery) -> None:
+    """Обработка vacancy_filter callback"""
     await query.message.answer(text=text.direction, reply_markup=get_direction_button())
+
+
+async def get_notification_callback(query: CallbackQuery) -> None:
+    """Обработка notification callback"""
+    await query.message.answer(text=text.get_notification, reply_markup=notification_button())
+
+
+async def get_restart(query: CallbackQuery, state: FSMContext) -> None:
+    """Обработка restart callback"""
+    pass
+    # await query.message.answer(text=text.direction, reply_markup=get_direction_button())

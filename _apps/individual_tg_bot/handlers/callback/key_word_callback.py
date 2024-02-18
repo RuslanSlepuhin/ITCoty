@@ -2,7 +2,7 @@ from _apps.individual_tg_bot import text
 from _apps.individual_tg_bot.service import show_summary
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-
+from _apps.individual_tg_bot.settings import APP_HOST, APP_PORT
 
 async def key_word_handler(
     message: Message,
@@ -12,10 +12,10 @@ async def key_word_handler(
 
     await state.update_data(keyword=message.text)
     data = await state.get_data()
-    base_url = "http://127.0.0.1:5000/user_requests_vacancies"
+    base_url = f"http://{APP_HOST}:{APP_PORT}/user_requests_vacancies"
     link = base_url + "?" + "&".join([f"{key}={value}" for key, value in data.items()])
     keyboard = InlineKeyboardMarkup()
-    keyboard.add(InlineKeyboardButton("Перейти", url=link))
+    keyboard.add(InlineKeyboardButton("Перейти к вакансиям", url=link))
     await message.answer(text=text.thanks_text, reply_markup=keyboard)
     await show_summary(message=message, data=data)
 

@@ -4,7 +4,11 @@ info = 'Я ITCoty бот который поможет вам найти раб�
 repeat = "Попробуем ещё раз, нажмите 'Фильтр вакансий' и выберете желаемые параметры для подбора."
 
 get_vacancy = "Поиск вакансий по базе"
-get_notification = "Необходимо выбрать подходящую периодичность"
+
+get_notification = "Подходящую периодичность"
+per_day_notification = "Дайджест за день"
+on_getting_notification = "По поступлению вакансий"
+cancel_notification = "Отменить получение уведомлений"
 
 create_table = """CREATE TABLE tg_bot ( user_id bigint ,name varchar(255), email varchar(255),direction varchar(255), specialization varchar(255),location varchar(255),salary_rate varchar(255),work_format varchar(255),keywords varchar(255),CV_url varchar(255)) """
 # Фильтр вакансий

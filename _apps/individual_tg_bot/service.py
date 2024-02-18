@@ -17,6 +17,5 @@ async def show_summary(message: Message, data: Dict) -> None:
         "work_format": ", ".join(data.get("selected_work_format", [])),
         "keyword": str(data.get("keyword", [])),
     }
-    await message.answer(text=str(result))
     await db.create_table()
     await db.insert_into_data(**result)

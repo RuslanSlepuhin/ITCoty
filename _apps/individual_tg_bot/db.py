@@ -88,18 +88,18 @@ class AsyncPGDatabase:
         try:
             query = """
                         SELECT * FROM vacancies
-                        WHERE profession LIKE $1
-                        AND profession LIKE $2
-                        AND job_type LIKE $3
-                        AND (body LIKE $4 OR body LIKE $5);
+                        WHERE profession iLIKE $1
+                        AND profession iLIKE $2
+                        AND job_type iLIKE $3
+                        AND (body iLIKE $4 OR body iLIKE $5); 
                     """
             vacancies = await self.connection.fetch(
                 query,
-                f"%{level.lower()}%",
-                f"%{direction.lower()}%",
-                f"%{work_format.lower()}%",
-                f"%{specialization[1:]}%",
-                f"%{keyword[1:]}%",
+                f"%{level}%",
+                f"%{direction}%",
+                f"%{work_format}%",
+                f"%{specialization}%",
+                f"%{keyword}%",
             )
             result = [dict(row) for row in vacancies]
             return result

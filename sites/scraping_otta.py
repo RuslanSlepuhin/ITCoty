@@ -261,7 +261,6 @@ class OttaGetInformation:
                         results_dict
                     )
 
-                    print("sort profession (33)")
                     await self.output_logs(
                         about_vacancy=response, vacancy=vacancy, vacancy_url=vacancy_url
                     )
@@ -315,7 +314,3 @@ class OttaGetInformation:
                 self.current_message = await send_message(
                     bot=self.bot, chat_id=self.chat_id, text=new_text
                 )
-
-
-# loop = asyncio.new_event_loop()
-# loop.run_until_complete(HHGetInformation(bot_dict={}).get_content())

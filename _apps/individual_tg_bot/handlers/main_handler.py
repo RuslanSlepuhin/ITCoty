@@ -23,6 +23,8 @@ from _apps.individual_tg_bot.handlers.callback.location_callback import (
     location_callback_handler,
 )
 from _apps.individual_tg_bot.handlers.callback.menu_callback import get_vacancy_filter, get_notification_callback
+from _apps.individual_tg_bot.handlers.callback.new_request_callback import comeback_request_callback, \
+    reset_request_callback
 from _apps.individual_tg_bot.handlers.callback.specialization_callback.analyst_specialization import (
     analyst_specialization_callback,
 )
@@ -109,6 +111,7 @@ class Handlers:
         self.register_work_format_handler()
         self.register_keyword_handler()
         self.register_notification_handlers()
+        self.reset_request_handler()
 
     def register_message_handlers(self):
         """Регистрация message handlers"""
@@ -227,3 +230,7 @@ class Handlers:
 
     def register_keyword_handler(self):
         self.dp.register_message_handler(key_word_handler, state="*")
+
+    def reset_request_handler(self):
+        self.dp.register_callback_query_handler(comeback_request_callback, text=text.come_back)
+        self.dp.register_callback_query_handler(reset_request_callback, text=text.reset_request)

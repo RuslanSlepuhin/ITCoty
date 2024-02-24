@@ -116,14 +116,59 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             logging.error(f"Error inserting data: {e}")
 
-    async def delete_data(self, condition_column, condition_value):
+    async def delete_user_request(self, user_id):
         if not self.connection:
             await self.connect()
 
         try:
             await self.connection.execute(
-                f"DELETE FROM tg_bot WHERE {condition_column} = $1", condition_value
+                f"DELETE FROM user_requests WHERE user_id = $1", user_id
             )
             logging.info("Data deleted successfully")
         except asyncpg.PostgresError as e:
             logging.error(f"Error deleting data: {e}")
+
+    async def get_user_request(self):
+        if not self.connection:
+            await self.connect()
+        try:
+            get_user = """SELECT *
+                FROM user_requests ;"""
+            result_user_requests = await self.connection.fetch(get_user)
+            user_requests = [dict(row) for row in result_user_requests]
+            return user_requests
+        except asyncpg.PostgresError as e:
+            logging.error(f"Error inserting data: {e}")
+
+    async def get_periodical_task_vacancies(self,
+        direction: str,
+        specialization: str,
+        level: str,
+        location: str,
+        work_format: str,
+        keyword: str,):
+        if not self.connection:
+            await self.connect()
+        try:
+            query = """
+                                     SELECT * FROM vacancies
+                                     WHERE profession iLIKE $1
+                                     AND profession iLIKE $2
+                                     AND job_type iLIKE $3
+                                     AND (body iLIKE $4 OR body iLIKE $5)
+                                     AND created_at >= TIMESTAMP '2024-01-23 15:25:03.697929' - interval '30 minute'
+                                     ORDER BY created_at DESC
+                                     limit 1; 
+                                 """ #TIMESTAMP '2024-01-23 15:25:03.697929' - interval '30 minute';  NOW() - interval '30 minute'
+            vacancies = await self.connection.fetch(
+                query,
+                f"%{level}%",
+                f"%{direction}%",
+                f"%{work_format}%",
+                f"%{specialization}%",
+                f"%{keyword}%",
+            )
+            result = [dict(row) for row in vacancies]
+            return result
+        except asyncpg.PostgresError as e:
+            logging.error(f"Error inserting data: {e}")

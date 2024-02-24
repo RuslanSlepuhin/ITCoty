@@ -6,11 +6,18 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
 from _apps.individual_tg_bot.keyboards.inline.notifications import notification_button
+from _apps.individual_tg_bot.keyboards.inline.new_request import new_request_button
+from _apps.individual_tg_bot.service import db
 
 
 async def get_vacancy_filter(query: CallbackQuery) -> None:
     """Обработка vacancy_filter callback"""
-    await query.message.answer(text=text.direction, reply_markup=get_direction_button())
+    result = await db.get_user_request()
+    users = [user.get('user_id') for user in result]
+    if query.from_user.id in users:
+        await query.message.answer(text.new_request, reply_markup=new_request_button())
+    else:
+        await query.message.answer(text=text.direction, reply_markup=get_direction_button())
 
 
 async def get_notification_callback(query: CallbackQuery) -> None:

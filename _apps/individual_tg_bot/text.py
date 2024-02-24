@@ -10,6 +10,11 @@ per_day_notification = "Дайджест за день"
 on_getting_notification = "По поступлению вакансий"
 cancel_notification = "Отменить получение уведомлений"
 
+# Повтор запроса
+new_request = 'Хотите сделать новый запрос?'
+reset_request = 'Сделать новый запрос'
+come_back = 'Вернуться в главное меню'
+
 create_table = """CREATE TABLE tg_bot ( user_id bigint ,name varchar(255), email varchar(255),direction varchar(255), specialization varchar(255),location varchar(255),salary_rate varchar(255),work_format varchar(255),keywords varchar(255),CV_url varchar(255)) """
 # Фильтр вакансий
 direction = "Необходимо выбрать IT направление"

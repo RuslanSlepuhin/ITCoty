@@ -91,7 +91,7 @@ class AsyncPGDatabase:
                         WHERE profession iLIKE $1
                         AND profession iLIKE $2
                         AND job_type iLIKE $3
-                        AND (body iLIKE $4 OR body iLIKE $5); 
+                        AND (body iLIKE $4 OR body iLIKE $5) ;
                     """
             vacancies = await self.connection.fetch(
                 query,
@@ -122,7 +122,7 @@ class AsyncPGDatabase:
 
         try:
             await self.connection.execute(
-                f"DELETE FROM user_requests WHERE user_id = $1", user_id
+                "DELETE FROM user_requests WHERE user_id = $1", user_id
             )
             logging.info("Data deleted successfully")
         except asyncpg.PostgresError as e:
@@ -140,25 +140,27 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             logging.error(f"Error inserting data: {e}")
 
-    async def get_periodical_task_vacancies(self,
+    async def get_periodical_task_vacancies(
+        self,
         direction: str,
         specialization: str,
         level: str,
         location: str,
         work_format: str,
-        keyword: str,):
+        keyword: str,
+    ):
         if not self.connection:
             await self.connect()
         try:
             query = """
-                                     SELECT * FROM vacancies
-                                     WHERE level iLIKE $1
-                                     AND sub iLIKE $2
-                                     AND job_type iLIKE $3
-                                     AND (body iLIKE $4 OR body iLIKE $5)
-                                     AND created_at >= NOW() - interval '30 minute'
-                                     ORDER BY created_at DESC;   
-                                 """
+                SELECT * FROM vacancies
+                WHERE level iLIKE $1
+                AND sub iLIKE $2
+                AND job_type iLIKE $3
+                AND (body iLIKE $4 OR body iLIKE $5)
+                AND created_at >= NOW() - interval '30 minute'
+                ORDER BY created_at DESC ;
+            """
             vacancies = await self.connection.fetch(
                 query,
                 f"%{level}%",

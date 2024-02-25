@@ -1,8 +1,9 @@
 from _apps.individual_tg_bot import text
 from _apps.individual_tg_bot.service import show_summary
+from _apps.individual_tg_bot.settings import APP_HOST, APP_PORT
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from _apps.individual_tg_bot.settings import APP_HOST, APP_PORT
+
 
 async def key_word_handler(
     message: Message,

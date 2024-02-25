@@ -20,9 +20,7 @@ async def cancel_handler(msg: Message, state: FSMContext) -> None:
     """Обработка команды cancel"""
 
     await state.finish()
-    await msg.answer(
-        text.repeat, reply_markup=get_inline_menu()
-    )
+    await msg.answer(text.repeat, reply_markup=get_inline_menu())
 
 
 async def bot_info(message: Message):

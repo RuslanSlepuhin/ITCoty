@@ -1,10 +1,7 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from _apps.individual_tg_bot.text import reset_request, come_back
+from _apps.individual_tg_bot.text import come_back, reset_request
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-new_request_button_dict = {
-    reset_request : reset_request,
-    come_back : come_back
-}
+new_request_button_dict = {reset_request: reset_request, come_back: come_back}
 
 
 def new_request_button():

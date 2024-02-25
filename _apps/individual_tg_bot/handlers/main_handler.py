@@ -22,9 +22,14 @@ from _apps.individual_tg_bot.handlers.callback.level_callback import (
 from _apps.individual_tg_bot.handlers.callback.location_callback import (
     location_callback_handler,
 )
-from _apps.individual_tg_bot.handlers.callback.menu_callback import get_vacancy_filter, get_notification_callback
-from _apps.individual_tg_bot.handlers.callback.new_request_callback import comeback_request_callback, \
-    reset_request_callback
+from _apps.individual_tg_bot.handlers.callback.menu_callback import (
+    get_notification_callback,
+    get_vacancy_filter,
+)
+from _apps.individual_tg_bot.handlers.callback.new_request_callback import (
+    comeback_request_callback,
+    reset_request_callback,
+)
 from _apps.individual_tg_bot.handlers.callback.specialization_callback.analyst_specialization import (
     analyst_specialization_callback,
 )
@@ -121,7 +126,9 @@ class Handlers:
         self.dp.register_message_handler(bot_info, commands=["info"])
 
     def register_notification_handlers(self):
-        self.dp.register_callback_query_handler(get_notification_callback, text=text.notification)
+        self.dp.register_callback_query_handler(
+            get_notification_callback, text=text.notification
+        )
 
     def register_direction_handlers(self):
         """Регистрация callback  direction handlers"""
@@ -232,5 +239,9 @@ class Handlers:
         self.dp.register_message_handler(key_word_handler, state="*")
 
     def reset_request_handler(self):
-        self.dp.register_callback_query_handler(comeback_request_callback, text=text.come_back)
-        self.dp.register_callback_query_handler(reset_request_callback, text=text.reset_request)
+        self.dp.register_callback_query_handler(
+            comeback_request_callback, text=text.come_back
+        )
+        self.dp.register_callback_query_handler(
+            reset_request_callback, text=text.reset_request
+        )

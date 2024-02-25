@@ -17,6 +17,6 @@ DB_PORT = os.getenv("DB_PORT")
 DB_URL = os.getenv("DB_URL")
 
 # Параметры конфигурации для Flask
-APP_HOST = os.getenv('APP_HOST')
-APP_PORT = os.getenv('APP_PORT')
-APP_DEBUG = os.getenv('APP_DEBUG')
+APP_HOST = os.getenv("APP_HOST")
+APP_PORT = os.getenv("APP_PORT")
+APP_DEBUG = os.getenv("APP_DEBUG")

@@ -1,11 +1,12 @@
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from _apps.individual_tg_bot import text
+from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 
 notification_dict = {
     text.per_day_notification: text.per_day_notification,
     text.on_getting_notification: text.on_getting_notification,
     text.cancel_notification: text.cancel_notification,
 }
+
 
 def notification_button():
     """Клавиатура для уведомлений"""

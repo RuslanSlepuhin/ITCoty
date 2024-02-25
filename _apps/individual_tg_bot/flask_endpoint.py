@@ -1,7 +1,8 @@
+from _apps.individual_tg_bot.settings import APP_DEBUG, APP_HOST, APP_PORT
 from flask import Flask, jsonify, request
 
 from service import db
-from _apps.individual_tg_bot.settings import APP_HOST,APP_PORT, APP_DEBUG
+
 app = Flask(__name__)
 
 
@@ -23,7 +24,6 @@ async def endpoint():
             keyword=keyword,
         )
         return jsonify(vacancies)
-
 
 
 if __name__ == "__main__":

@@ -152,14 +152,13 @@ class AsyncPGDatabase:
         try:
             query = """
                                      SELECT * FROM vacancies
-                                     WHERE profession iLIKE $1
-                                     AND profession iLIKE $2
+                                     WHERE level iLIKE $1
+                                     AND sub iLIKE $2
                                      AND job_type iLIKE $3
                                      AND (body iLIKE $4 OR body iLIKE $5)
-                                     AND created_at >= TIMESTAMP '2024-01-23 15:25:03.697929' - interval '30 minute'
-                                     ORDER BY created_at DESC
-                                     limit 1; 
-                                 """ #TIMESTAMP '2024-01-23 15:25:03.697929' - interval '30 minute';  NOW() - interval '30 minute'
+                                     AND created_at >= NOW() - interval '30 minute'
+                                     ORDER BY created_at DESC;   
+                                 """
             vacancies = await self.connection.fetch(
                 query,
                 f"%{level}%",
@@ -168,7 +167,9 @@ class AsyncPGDatabase:
                 f"%{specialization}%",
                 f"%{keyword}%",
             )
-            result = [dict(row) for row in vacancies]
-            return result
+
+            if vacancies:
+                result = [dict(row) for row in vacancies]
+                return result
         except asyncpg.PostgresError as e:
             logging.error(f"Error inserting data: {e}")

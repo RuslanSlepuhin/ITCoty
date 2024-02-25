@@ -10,6 +10,8 @@ per_day_notification = "Дайджест за день"
 on_getting_notification = "По поступлению вакансий"
 cancel_notification = "Отменить получение уведомлений"
 
+#Подходящие вакансии
+suit_vacancies = 'Подходящие новые вакансии: \n'
 # Повтор запроса
 new_request = 'Хотите сделать новый запрос?'
 reset_request = 'Сделать новый запрос'

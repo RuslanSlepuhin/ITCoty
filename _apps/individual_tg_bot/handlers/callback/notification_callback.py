@@ -1,20 +1,21 @@
-from aiogram import Bot
+
 from aiogram.types import CallbackQuery
+from _apps.individual_tg_bot import text
+from _apps.individual_tg_bot.keyboards.inline.main_menu import get_inline_menu
+from _apps.individual_tg_bot.service import db
 
 
-# @router.callback_query(F.data == "notification_on_receipt")
-async def get_notification_on_receipt(query: CallbackQuery, bot: Bot) -> None:
-    """Обработка notification_on_receipt callback"""
+async def get_per_day_notification(query: CallbackQuery) -> None:
+    """Обработка per_day_notification callback"""
     pass
 
 
-# @router.callback_query(F.data == "notification_digest")
-async def get_notification_digest(query: CallbackQuery, bot: Bot) -> None:
-    """Обработка notification_digest callback"""
+async def get_on_getting_notification(query: CallbackQuery) -> None:
+    """Обработка on_getting_notification callback"""
     pass
 
 
-# @router.callback_query(F.data == "cancel_notification")
-async def get_cancel_notification(query: CallbackQuery, bot: Bot) -> None:
+async def cancel_notification(query: CallbackQuery) -> None:
     """Обработка cancel_notification callback"""
-    pass
+    await db.delete_user_request(query.from_user.id)
+    await query.message.answer(text=text.menu, reply_markup=get_inline_menu())

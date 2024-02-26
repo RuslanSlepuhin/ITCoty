@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = "api.User"
 
 SITE_ID = 1
 
@@ -41,16 +41,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'django.contrib.sites',
+    "django.contrib.sites",
     "api",
     "rest_framework",
     "rest_framework.authtoken",
-    'dj_rest_auth',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'dj_rest_auth.registration',
-    'rest_framework_simplejwt'
+    "dj_rest_auth",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "dj_rest_auth.registration",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -148,17 +148,13 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'dj_rest_auth.jwt_auth.JWTAuthentication',
-    )
+    "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTAuthentication",)
 }
 REST_AUTH = {
-    'USE_JWT': True,
+    "USE_JWT": True,
     "REGISTER_SERIALIZER": "api.serializers.RegisterSerializer",
-    "LOGIN_SERIALIZER": "api.serializers.LoginSerializer",
     "UNIQUE_EMAIL": True,
-    "OLD_PASSWORD_FIELD_ENABLED": True
-
+    "OLD_PASSWORD_FIELD_ENABLED": True,
 }
 
 ACCOUNT_EMAIL_REQUIRED = True
@@ -166,7 +162,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 # EMAIL_HOST = 'smtp.gmail.com'

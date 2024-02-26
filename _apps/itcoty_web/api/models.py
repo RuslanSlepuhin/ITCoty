@@ -38,7 +38,6 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True, blank=False, null=False)
-    email_confirmed = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

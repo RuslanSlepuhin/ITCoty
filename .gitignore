@@ -11,3 +11,4 @@ __pycache__/
 /db_backup/from_server/
 /__backup__/
 /settings/config_keys.ini
+.DS_Store

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -69,7 +70,7 @@ ROOT_URLCONF = "itcoty_web.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "itcoty_web/templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -153,6 +154,7 @@ REST_FRAMEWORK = {
 REST_AUTH = {
     "USE_JWT": True,
     "REGISTER_SERIALIZER": "api.serializers.RegisterSerializer",
+    "PASSWORD_RESET_SERIALIZER": "api.serializers.CustomPasswordResetSerializer",
     "UNIQUE_EMAIL": True,
     "OLD_PASSWORD_FIELD_ENABLED": True,
 }

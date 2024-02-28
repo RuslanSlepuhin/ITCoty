@@ -1,7 +1,10 @@
+from dj_rest_auth.serializers import PasswordResetSerializer
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+
+from .forms import CustomAllAuthPasswordResetForm
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -64,3 +67,9 @@ class RegisterSerializer(serializers.Serializer):
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
         return user
+
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    @property
+    def password_reset_form_class(self):
+        return CustomAllAuthPasswordResetForm

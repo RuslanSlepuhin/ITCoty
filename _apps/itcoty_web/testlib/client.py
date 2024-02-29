@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-import requests
-from pydantic import BaseModel
-from pydantic import Extra
+
 import orjson
+import requests
+from pydantic import BaseModel, Extra
 
 
 class MyModel(BaseModel):

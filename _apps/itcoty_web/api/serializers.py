@@ -1,6 +1,6 @@
 from dj_rest_auth.serializers import PasswordResetSerializer
-from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -11,7 +11,7 @@ try:
     from allauth.account.adapter import get_adapter
     from allauth.account.utils import setup_user_email
     from allauth.socialaccount.helpers import complete_social_login
-    from allauth.socialaccount.models import SocialAccount, EmailAddress
+    from allauth.socialaccount.models import EmailAddress, SocialAccount
     from allauth.socialaccount.providers.base import AuthProcess
     from allauth.utils import get_username_max_length
 except ImportError:

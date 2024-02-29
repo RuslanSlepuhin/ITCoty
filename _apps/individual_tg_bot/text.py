@@ -3,19 +3,30 @@ menu = "Меню фильтра вакансий"
 info = "Я ITCoty бот который поможет вам найти работу в IT,\nДля прохождения опроса команда /start \n Для вывода меню фильтра вакансий команда /menu."
 repeat = "Попробуем ещё раз, нажмите 'Фильтр вакансий' и выберете желаемые параметры для подбора."
 
+
 get_vacancy = "Поиск вакансий по базе"
 
-get_notification = "Подходящую периодичность"
+# Уведомления о вакансиях
+get_notification = "Необходимо выбрать подходящую периодичность"
+
 per_day_notification = "Дайджест за день"
 on_getting_notification = "По поступлению вакансий"
 cancel_notification = "Отменить получение уведомлений"
-
+chosen_notification = 'Выбранная периодичность: {notification}\nХотите изменить?'
+confirm_change_notification = 'Да, изменить уведомления'
+cancel_change_notification = 'Нет, вернуться в меню'
+success_change_notification = 'Уведомления успешно изменены!'
+make_vacancy_filter = 'Для изменение периодичности необходимо заполнить фильтр вакансий'
 # Подходящие вакансии
 suit_vacancies = "Подходящие новые вакансии: \n"
 # Повтор запроса
 new_request = "Хотите сделать новый запрос?"
 reset_request = "Сделать новый запрос"
 come_back = "Вернуться в главное меню"
+
+#Интервалы для выбора вакансий
+every_thirty_min = 30
+once_per_day = 60 * 24 * 90
 
 create_table = """CREATE TABLE tg_bot ( user_id bigint ,name varchar(255), email varchar(255),direction varchar(255), specialization varchar(255),location varchar(255),salary_rate varchar(255),work_format varchar(255),keywords varchar(255),CV_url varchar(255)) """
 # Фильтр вакансий
@@ -33,6 +44,7 @@ work_format = "Формат работы"
 chosen_format = "Выбранный формат работы:"
 
 add_info = "Ключевое слово:"
+
 # Доп. кнопки
 skip_continue = "Пропустить"
 accept = "Сохранить и перейти к уровню"
@@ -47,6 +59,7 @@ start_survey = "Пройти опрос"
 notification = "Периодичность уведомлений"
 user_profile = "Профиль на сайте"
 restart = "Прекращение выдачи"
+success_restart = 'Выдача была успешно удалена, хотите пройти новый запрос'
 
 # Направления
 design = "Design"

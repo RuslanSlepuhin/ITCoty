@@ -18,6 +18,7 @@ async def key_word_handler(
     keyboard = InlineKeyboardMarkup()
     keyboard.add(InlineKeyboardButton("Перейти к вакансиям", url=link))
     await message.answer(text=text.thanks_text, reply_markup=keyboard)
+    data['selected_notification'] = text.on_getting_notification
     await show_summary(message=message, data=data)
 
     await state.finish()

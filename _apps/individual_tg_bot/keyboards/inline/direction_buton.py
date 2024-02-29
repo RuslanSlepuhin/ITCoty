@@ -44,7 +44,4 @@ def get_direction_button():
         InlineKeyboardButton(text=text.game_dev, callback_data=text.game_dev)
     )
     inline_keyboard.add(InlineKeyboardButton(text=text.qa, callback_data=text.qa))
-    inline_keyboard.add(
-        InlineKeyboardButton(text=text.skip_continue, callback_data=text.skip_continue)
-    )
     return inline_keyboard

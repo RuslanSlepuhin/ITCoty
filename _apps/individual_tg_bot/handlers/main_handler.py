@@ -24,12 +24,14 @@ from _apps.individual_tg_bot.handlers.callback.location_callback import (
 )
 from _apps.individual_tg_bot.handlers.callback.menu_callback import (
     get_notification_callback,
-    get_vacancy_filter,
+    get_vacancy_filter, get_restart_callback,
 )
 from _apps.individual_tg_bot.handlers.callback.new_request_callback import (
     comeback_request_callback,
     reset_request_callback,
 )
+from _apps.individual_tg_bot.handlers.callback.notification_callback import confirm_change_user_notification, \
+    cancel_user_notification, get_per_day_notification, get_on_getting_notification, cancel_change_user_notification
 from _apps.individual_tg_bot.handlers.callback.specialization_callback.analyst_specialization import (
     analyst_specialization_callback,
 )
@@ -117,6 +119,7 @@ class Handlers:
         self.register_keyword_handler()
         self.register_notification_handlers()
         self.reset_request_handler()
+        self.register_menu_callback()
 
     def register_message_handlers(self):
         """Регистрация message handlers"""
@@ -126,15 +129,27 @@ class Handlers:
         self.dp.register_message_handler(bot_info, commands=["info"])
 
     def register_notification_handlers(self):
-        self.dp.register_callback_query_handler(
-            get_notification_callback, text=text.notification
-        )
+        """Регистрация callback notification handlers"""
 
-    def register_direction_handlers(self):
-        """Регистрация callback  direction handlers"""
+        self.dp.register_callback_query_handler(confirm_change_user_notification, text=text.confirm_change_notification)
+        self.dp.register_callback_query_handler(cancel_user_notification, text=text.cancel_notification)
+        self.dp.register_callback_query_handler(get_per_day_notification, text=text.per_day_notification)
+        self.dp.register_callback_query_handler(get_on_getting_notification, text=text.on_getting_notification)
+        self.dp.register_callback_query_handler(cancel_change_user_notification, text=text.cancel_change_notification)
+
+    def register_menu_callback(self):
+        """Регистрация callback menu handlers"""
         self.dp.register_callback_query_handler(
             get_vacancy_filter, text=text.vacancy_filter
         )
+        self.dp.register_callback_query_handler(
+            get_notification_callback, text=text.notification
+        )
+        self.dp.register_callback_query_handler(
+            get_restart_callback, text=text.restart
+        )
+    def register_direction_handlers(self):
+        """Регистрация callback  direction handlers"""
         self.dp.register_callback_query_handler(
             direction_design_callback, text=text.design
         )
@@ -176,6 +191,7 @@ class Handlers:
         self.dp.register_callback_query_handler(direction_qa_callback, text=text.qa)
 
     def register_specializations_handlers(self):
+        """Регистрация callback  specializations handlers"""
         self.dp.register_callback_query_handler(
             design_specialization_callback, text=buttons_design
         )
@@ -221,24 +237,29 @@ class Handlers:
         )
 
     def register_level_handler(self):
+        """Регистрация callback  level handlers"""
         self.dp.register_callback_query_handler(
             level_callback_handler, text=level_button_dict
         )
 
     def register_location_handler(self):
+        """Регистрация callback  location handlers"""
         self.dp.register_callback_query_handler(
             location_callback_handler, text=location_button_dict
         )
 
     def register_work_format_handler(self):
+        """Регистрация callback  work_format handlers"""
         self.dp.register_callback_query_handler(
             work_format_callback_handler, text=work_format_dict
         )
 
     def register_keyword_handler(self):
+        """Регистрация callback  keyword_ handlers"""
         self.dp.register_message_handler(key_word_handler, state="*")
 
     def reset_request_handler(self):
+        """Регистрация callback  reset_request handlers"""
         self.dp.register_callback_query_handler(
             comeback_request_callback, text=text.come_back
         )

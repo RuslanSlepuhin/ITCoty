@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "dj_rest_auth.registration",
     "rest_framework_simplejwt",
 ]
@@ -153,6 +154,7 @@ REST_FRAMEWORK = {
 }
 REST_AUTH = {
     "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
     "REGISTER_SERIALIZER": "api.serializers.RegisterSerializer",
     "PASSWORD_RESET_SERIALIZER": "api.serializers.CustomPasswordResetSerializer",
     "UNIQUE_EMAIL": True,
@@ -164,11 +166,14 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 
+
+GOOGLE_REDIRECT_URL = "http://127.0.0.1:8000/"
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'obeythetestinggoat@gmail.com'
+# EMAIL_HOST = os.environ.get('EMAIL_HOST')
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
-# EMAIL_PORT = 587
+# EMAIL_PORT = os.environ.get('EMAIL_PORT')
 # EMAIL_USE_TLS = True

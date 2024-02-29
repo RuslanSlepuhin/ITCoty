@@ -43,3 +43,97 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+
+class CurrentSession(models.Model):
+    id = models.IntegerField(primary_key=True)
+    session = models.CharField(max_length=15, unique=True)
+
+    class Meta:
+        db_table = "current_session"
+
+
+class Vacancies(models.Model):
+    id = models.IntegerField(primary_key=True)
+    chat_name = models.CharField(max_length=150, blank=True, null=True)
+    title = models.CharField(max_length=1000, blank=True, null=True)
+    body = models.CharField(max_length=6000, blank=True, null=True)
+    profession = models.CharField(max_length=30, blank=True, null=True)
+    vacancy = models.CharField(max_length=700, blank=True, null=True)
+    vacancy_url = models.CharField(max_length=150, blank=True, null=True)
+    company = models.CharField(max_length=200, blank=True, null=True)
+    english = models.CharField(max_length=100, blank=True, null=True)
+    relocation = models.CharField(max_length=100, blank=True, null=True)
+    job_type = models.CharField(max_length=700, blank=True, null=True)
+    city = models.CharField(max_length=150, blank=True, null=True)
+    salary = models.CharField(max_length=300, blank=True, null=True)
+    salary_from = models.IntegerField()
+    salary_to = models.IntegerField()
+    salary_currency = models.CharField(max_length=20, blank=True, null=True)
+    salary_period = models.CharField(max_length=50, blank=True, null=True)
+    experience = models.CharField(max_length=700, blank=True, null=True)
+    contacts = models.CharField(max_length=500, blank=True, null=True)
+    time_of_public = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    agregator_link = models.CharField(max_length=200, blank=True, null=True)
+    session = models.ForeignKey(CurrentSession, on_delete=models.SET_NULL, to_field="session")
+    sended_to_agregator = models.CharField(max_length=30, blank=True, null=True)
+    sub = models.CharField(max_length=250, blank=True, null=True)
+    tags = models.CharField(max_length=700, blank=True, null=True)
+    full_tags = models.CharField(max_length=700, blank=True, null=True)
+    full_anti_tags = models.CharField(max_length=700, blank=True, null=True)
+    short_session_numbers = models.CharField(max_length=300, blank=True, null=True)
+    level = models.CharField(max_length=70, blank=True, null=True)
+    approved = models.CharField(max_length=100, blank=True, null=True)
+    closed = models.BooleanField()
+    rate = models.FloatField()
+    salary_from_usd_month = models.IntegerField()
+    salary_to_usd_month = models.IntegerField()
+
+    class Meta:
+        db_table = 'vacancies'
+
+
+class Companies(models.Model):
+    id = models.IntegerField(primary_key=True)
+    company = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = "companies"
+
+
+class AdminVacancies(models.Model):
+    id = models.IntegerField(primary_key=True)
+    chat_name = models.CharField(max_length=150, blank=True, null=True)
+    title = models.CharField(max_length=1000, blank=True, null=True)
+    body = models.CharField(max_length=6000, blank=True, null=True)
+    profession = models.CharField(max_length=30, blank=True, null=True)
+    vacancy = models.CharField(max_length=700, blank=True, null=True)
+    vacancy_url = models.CharField(max_length=150, blank=True, null=True)
+    company = models.CharField(max_length=200, blank=True, null=True)
+    english = models.CharField(max_length=100, blank=True, null=True)
+    relocation = models.CharField(max_length=100, blank=True, null=True)
+    job_type = models.CharField(max_length=700, blank=True, null=True)
+    city = models.CharField(max_length=150, blank=True, null=True)
+    salary = models.CharField(max_length=300, blank=True, null=True)
+    salary_from = models.IntegerField()
+    salary_to = models.IntegerField()
+    salary_currency = models.CharField(max_length=20, blank=True, null=True)
+    salary_period = models.CharField(max_length=50, blank=True, null=True)
+    experience = models.CharField(max_length=700, blank=True, null=True)
+    contacts = models.CharField(max_length=500, blank=True, null=True)
+    time_of_public = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    agregator_link = models.CharField(max_length=200, blank=True, null=True)
+    session = models.ForeignKey(CurrentSession, on_delete=models.SET_NULL, to_field="session")
+    sended_to_agregator = models.CharField(max_length=30, blank=True, null=True)
+    sub = models.CharField(max_length=250, blank=True, null=True)
+    tags = models.CharField(max_length=700, blank=True, null=True)
+    full_tags = models.CharField(max_length=700, blank=True, null=True)
+    full_anti_tags = models.CharField(max_length=700, blank=True, null=True)
+    short_session_numbers = models.CharField(max_length=300, blank=True, null=True)
+    level = models.CharField(max_length=70, blank=True, null=True)
+    approved = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'admin_last_session'

@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import configparser
 import os
+import pathlib
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -96,14 +97,18 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# config = configparser.ConfigParser()
+# config.read("./settings/config.ini")
+
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "d87j4mdue5vfaf",
-#         "USER": "gptxbdndbforik",
-#         "PASSWORD": "8e33de2c3cb1e6472a0f5689409f609c169e8b8f134b0181c4c36ca59bd1db58",
-#         "HOST": "ec2-34-242-8-97.eu-west-1.compute.amazonaws.com",
-#         "PORT": "5432",
+#         "NAME": config['DB_local_clone']['database'],
+#         "USER": config['DB_local_clone']['user'],
+#         "PASSWORD": config['DB_local_clone']['password'],
+#         "HOST": config['DB_local_clone']['host'],
+#         "PORT": config['DB_local_clone']['port'],
 #     },
 # }
 

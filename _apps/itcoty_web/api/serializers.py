@@ -15,7 +15,7 @@ try:
     from allauth.socialaccount.providers.base import AuthProcess
     from allauth.utils import get_username_max_length
 except ImportError:
-    raise ImportError('allauth needs to be added to INSTALLED_APPS.')
+    raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 
 User = get_user_model()
 
@@ -30,7 +30,7 @@ class RegisterSerializer(serializers.Serializer):
 
         if email and User.objects.filter(email=email).exists():
             raise serializers.ValidationError(
-                _('A user is already registered with this e-mail address.'),
+                _("A user is already registered with this e-mail address."),
             )
         return email
 
@@ -38,8 +38,10 @@ class RegisterSerializer(serializers.Serializer):
         return get_adapter().clean_password(password)
 
     def validate(self, data):
-        if data['password1'] != data['password2']:
-            raise serializers.ValidationError(_("The two password fields didn't match."))
+        if data["password1"] != data["password2"]:
+            raise serializers.ValidationError(
+                _("The two password fields didn't match.")
+            )
         return data
 
     def custom_signup(self, request, user):
@@ -47,8 +49,8 @@ class RegisterSerializer(serializers.Serializer):
 
     def get_cleaned_data(self):
         return {
-            'password1': self.validated_data.get('password1', ''),
-            'email': self.validated_data.get('email', ''),
+            "password1": self.validated_data.get("password1", ""),
+            "email": self.validated_data.get("email", ""),
         }
 
     def save(self, request):
@@ -58,7 +60,7 @@ class RegisterSerializer(serializers.Serializer):
         user = adapter.save_user(request, user, self, commit=False)
         if "password1" in self.cleaned_data:
             try:
-                adapter.clean_password(self.cleaned_data['password1'], user=user)
+                adapter.clean_password(self.cleaned_data["password1"], user=user)
             except DjangoValidationError as exc:
                 raise serializers.ValidationError(
                     detail=serializers.as_serializer_error(exc)

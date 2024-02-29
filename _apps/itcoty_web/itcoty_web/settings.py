@@ -99,7 +99,7 @@ DATABASES = {
 }
 
 # config = configparser.ConfigParser()
-# config.read("./settings/config.ini")
+# config.read("./../../settings/config.ini")
 
 # DATABASES = {
 #     "default": {

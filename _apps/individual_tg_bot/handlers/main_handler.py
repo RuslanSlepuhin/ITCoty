@@ -24,14 +24,20 @@ from _apps.individual_tg_bot.handlers.callback.location_callback import (
 )
 from _apps.individual_tg_bot.handlers.callback.menu_callback import (
     get_notification_callback,
-    get_vacancy_filter, get_restart_callback,
+    get_restart_callback,
+    get_vacancy_filter,
 )
 from _apps.individual_tg_bot.handlers.callback.new_request_callback import (
     comeback_request_callback,
     reset_request_callback,
 )
-from _apps.individual_tg_bot.handlers.callback.notification_callback import confirm_change_user_notification, \
-    cancel_user_notification, get_per_day_notification, get_on_getting_notification, cancel_change_user_notification
+from _apps.individual_tg_bot.handlers.callback.notification_callback import (
+    cancel_change_user_notification,
+    cancel_user_notification,
+    confirm_change_user_notification,
+    get_on_getting_notification,
+    get_per_day_notification,
+)
 from _apps.individual_tg_bot.handlers.callback.specialization_callback.analyst_specialization import (
     analyst_specialization_callback,
 )
@@ -131,11 +137,21 @@ class Handlers:
     def register_notification_handlers(self):
         """Регистрация callback notification handlers"""
 
-        self.dp.register_callback_query_handler(confirm_change_user_notification, text=text.confirm_change_notification)
-        self.dp.register_callback_query_handler(cancel_user_notification, text=text.cancel_notification)
-        self.dp.register_callback_query_handler(get_per_day_notification, text=text.per_day_notification)
-        self.dp.register_callback_query_handler(get_on_getting_notification, text=text.on_getting_notification)
-        self.dp.register_callback_query_handler(cancel_change_user_notification, text=text.cancel_change_notification)
+        self.dp.register_callback_query_handler(
+            confirm_change_user_notification, text=text.confirm_change_notification
+        )
+        self.dp.register_callback_query_handler(
+            cancel_user_notification, text=text.cancel_notification
+        )
+        self.dp.register_callback_query_handler(
+            get_per_day_notification, text=text.per_day_notification
+        )
+        self.dp.register_callback_query_handler(
+            get_on_getting_notification, text=text.on_getting_notification
+        )
+        self.dp.register_callback_query_handler(
+            cancel_change_user_notification, text=text.cancel_change_notification
+        )
 
     def register_menu_callback(self):
         """Регистрация callback menu handlers"""
@@ -145,9 +161,8 @@ class Handlers:
         self.dp.register_callback_query_handler(
             get_notification_callback, text=text.notification
         )
-        self.dp.register_callback_query_handler(
-            get_restart_callback, text=text.restart
-        )
+        self.dp.register_callback_query_handler(get_restart_callback, text=text.restart)
+
     def register_direction_handlers(self):
         """Регистрация callback  direction handlers"""
         self.dp.register_callback_query_handler(

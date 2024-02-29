@@ -1,15 +1,14 @@
-
-
-from _apps.individual_tg_bot.settings import APP_DEBUG, APP_HOST, APP_PORT
-from flask import Flask, jsonify, request
-from _apps.individual_tg_bot.text import once_per_day
-from service import db
 import datetime
 from datetime import timedelta
 
+from _apps.individual_tg_bot.settings import APP_DEBUG, APP_HOST, APP_PORT
+from _apps.individual_tg_bot.text import once_per_day
+from flask import Flask, jsonify, request
 
+from service import db
 
 app = Flask(__name__)
+
 
 @app.route("/user_requests_vacancies", methods=["GET"])
 async def get_user_requests_vacancies():
@@ -49,7 +48,7 @@ def get_user_digest():
             location=selected_location,
             work_format=selected_work_format,
             keyword=keyword,
-            interval=interval
+            interval=interval,
         )
         return jsonify(vacancies)
 

@@ -1,7 +1,8 @@
 import asyncio
 import logging
-import psycopg2
+
 import asyncpg
+import psycopg2
 from psycopg2.extras import DictCursor
 
 
@@ -67,7 +68,15 @@ class AsyncPGDatabase:
             self.logger.error(f"Error creating table: {e}")
 
     async def insert_into_data(
-        self, user_id, direction, specialization, level, location, work_format, keyword, selected_notification
+        self,
+        user_id,
+        direction,
+        specialization,
+        level,
+        location,
+        work_format,
+        keyword,
+        selected_notification,
     ):
         if not self.connection:
             await self.connect()
@@ -83,7 +92,7 @@ class AsyncPGDatabase:
                 location,
                 work_format,
                 keyword,
-                selected_notification
+                selected_notification,
             )
             self.logger.info("Data inserted successfully")
         except asyncpg.PostgresError as e:
@@ -150,11 +159,17 @@ class AsyncPGDatabase:
         try:
             async with self.lock:
                 if selected_notification is not None:
-                    get_user = "SELECT * FROM user_requests WHERE selected_notification = $1;"
-                    result_user_requests = await self.connection.fetch(get_user, selected_notification)
+                    get_user = (
+                        "SELECT * FROM user_requests WHERE selected_notification = $1;"
+                    )
+                    result_user_requests = await self.connection.fetch(
+                        get_user, selected_notification
+                    )
                 elif user_id is not None:
                     get_user = "SELECT * FROM user_requests WHERE user_id = $1 LIMIT 1;"
-                    result_user_requests = await self.connection.fetch(get_user, user_id)
+                    result_user_requests = await self.connection.fetch(
+                        get_user, user_id
+                    )
                 else:
                     get_user = "SELECT * FROM user_requests;"
                     result_user_requests = await self.connection.fetch(get_user)
@@ -184,13 +199,20 @@ class AsyncPGDatabase:
                         AND job_type iLIKE %s
                         AND (body iLIKE %s OR body iLIKE %s)
                         AND created_at >= %s
-                        ORDER BY created_at DESC 
+                        ORDER BY created_at DESC
                         ;
                     """
 
             cursor.execute(
                 query,
-                (level, f'%{direction}%', f'%{work_format}%', f'%{specialization}%', f'%{keyword}%', interval)
+                (
+                    level,
+                    f"%{direction}%",
+                    f"%{work_format}%",
+                    f"%{specialization}%",
+                    f"%{keyword}%",
+                    interval,
+                ),
             )
             vacancies = cursor.fetchall()
             result = [dict(row) for row in vacancies]
@@ -199,16 +221,16 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             self.logger.error(f"Error inserting data: {e}")
 
-
-    async def change_user_notification(self,notification, user_id):
+    async def change_user_notification(self, notification, user_id):
         if not self.connection:
             await self.connect()
 
         try:
             await self.connection.execute(
-                "UPDATE user_requests SET selected_notification = $1 WHERE user_id = $2", notification, user_id
+                "UPDATE user_requests SET selected_notification = $1 WHERE user_id = $2",
+                notification,
+                user_id,
             )
             self.logger.info("Data updated successfully")
         except asyncpg.PostgresError as e:
             self.logger.error(f"Error updating data: {e}")
-

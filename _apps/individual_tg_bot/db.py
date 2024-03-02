@@ -98,7 +98,7 @@ class AsyncPGDatabase:
         except asyncpg.PostgresError as e:
             self.logger.error(f"Error inserting data: {e}")
 
-    async def receive_vacancy(
+    def receive_vacancy(
         self,
         direction: str,
         specialization: str,
@@ -107,25 +107,53 @@ class AsyncPGDatabase:
         work_format: str,
         keyword: str,
     ):
-        if not self.connection:
-            await self.connect()
+        if not self.connection_sync:
+            self.connect_sync()
 
         try:
+            cursor = self.connection_sync.cursor(cursor_factory=DictCursor)
             query = """
-                        SELECT * FROM vacancies
-                        WHERE profession iLIKE $1
-                        AND profession iLIKE $2
-                        AND job_type iLIKE $3
-                        AND (body iLIKE $4 OR body iLIKE $5) ;
-                    """
-            vacancies = await self.connection.fetch(
-                query,
-                f"%{level}%",
-                f"%{direction}%",
-                f"%{work_format}%",
-                f"%{specialization}%",
-                f"%{keyword}%",
+                            SELECT * FROM vacancies
+                            WHERE 
+                                """
+
+            level_conditions = " OR ".join(["level iLIKE %s" for _ in level.split()])
+
+            query += f"({level_conditions})"
+            query += """ AND """
+
+            profession_conditions = " OR ".join(
+                ["profession iLIKE %s" for _ in direction.split()]
             )
+
+            query += f"({profession_conditions})"
+            query += """ AND """
+
+            job_type_conditions = " OR ".join(
+                ["job_type iLIKE %s" for _ in work_format.split()]
+            )
+            query += f"({job_type_conditions})"
+            query += """ AND """
+
+            specialization_conditions = " OR ".join(
+                ["body iLIKE %s" for _ in specialization.split()]
+            )
+
+            query += f"({specialization_conditions})"
+            query += """ OR """
+            keyword_conditions = " OR ".join(["body iLIKE %s" for _ in keyword.split()])
+            query += f"({keyword_conditions})"
+            query += """;"""
+            params = (
+                *[f"%{word}%" for word in level.split("', '")],
+                *[f"%{word}%" for word in direction.split("', '")],
+                *[f"%{word}%" for word in work_format.split("', '")],
+                *[f"%{word}%" for word in specialization.split("', '")],
+                *[f"%{word}%" for word in keyword.split("', '")],
+            )
+            cursor.execute(query, params)
+            print(query)
+            vacancies = cursor.fetchall()
             result = [dict(row) for row in vacancies]
             return result
         except asyncpg.PostgresError as e:

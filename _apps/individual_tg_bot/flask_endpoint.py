@@ -11,15 +11,22 @@ app = Flask(__name__)
 
 
 @app.route("/user_requests_vacancies", methods=["GET"])
-async def get_user_requests_vacancies():
+def get_user_requests_vacancies():
     if request.args is not None:
-        selected_direction = request.args.get("selected_direction")
-        selected_specializations = request.args.get("selected_specializations")[2:-2]
-        selected_level = request.args.get("selected_level")[2:-2]
-        selected_location = request.args.get("selected_location")[2:-2]
-        selected_work_format = request.args.get("selected_work_format")[2:-2]
-        keyword = request.args.get("keyword")
-        vacancies = await db.receive_vacancy(
+        query_string = list(request.args.keys())[0]
+        query_params = query_string.split("&")
+        params_dict = {}
+        for param in query_params:
+            key, value = param.split("=")
+            params_dict[key] = value
+
+        selected_direction = params_dict.get("selected_direction")
+        selected_specializations = params_dict.get("selected_specializations")[2:-2]
+        selected_level = params_dict.get("selected_level")[2:-2]
+        selected_location = params_dict.get("selected_location")[2:-2]
+        selected_work_format = params_dict.get("selected_work_format")[2:-2]
+        keyword = params_dict.get("keyword")
+        vacancies = db.receive_vacancy(
             direction=selected_direction,
             specialization=selected_specializations,
             level=selected_level,

@@ -1,7 +1,7 @@
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 
 
 class CustomUserManager(BaseUserManager):
@@ -41,7 +41,7 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
 
@@ -76,7 +76,9 @@ class Vacancies(models.Model):
     time_of_public = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     agregator_link = models.CharField(max_length=200, blank=True, null=True)
-    session = models.ForeignKey(CurrentSession, on_delete=models.SET_NULL, to_field="session")
+    session = models.ForeignKey(
+        CurrentSession, on_delete=models.SET_NULL, to_field="session"
+    )
     sended_to_agregator = models.CharField(max_length=30, blank=True, null=True)
     sub = models.CharField(max_length=250, blank=True, null=True)
     tags = models.CharField(max_length=700, blank=True, null=True)
@@ -91,7 +93,7 @@ class Vacancies(models.Model):
     salary_to_usd_month = models.IntegerField()
 
     class Meta:
-        db_table = 'vacancies'
+        db_table = "vacancies"
 
 
 class Companies(models.Model):
@@ -125,7 +127,9 @@ class AdminVacancies(models.Model):
     time_of_public = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     agregator_link = models.CharField(max_length=200, blank=True, null=True)
-    session = models.ForeignKey(CurrentSession, on_delete=models.SET_NULL, to_field="session")
+    session = models.ForeignKey(
+        CurrentSession, on_delete=models.SET_NULL, to_field="session"
+    )
     sended_to_agregator = models.CharField(max_length=30, blank=True, null=True)
     sub = models.CharField(max_length=250, blank=True, null=True)
     tags = models.CharField(max_length=700, blank=True, null=True)
@@ -136,4 +140,4 @@ class AdminVacancies(models.Model):
     approved = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        db_table = 'admin_last_session'
+        db_table = "admin_last_session"

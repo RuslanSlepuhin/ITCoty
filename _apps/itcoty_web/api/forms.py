@@ -1,8 +1,12 @@
-from allauth.account.utils import (filter_users_by_email, user_pk_to_url_str, user_username)
-from allauth.utils import build_absolute_uri
+from allauth.account import app_settings
 from allauth.account.adapter import get_adapter
 from allauth.account.forms import default_token_generator
-from allauth.account import app_settings
+from allauth.account.utils import (
+    filter_users_by_email,
+    user_pk_to_url_str,
+    user_username,
+)
+from allauth.utils import build_absolute_uri
 from dj_rest_auth.forms import AllAuthPasswordResetForm
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -21,8 +25,8 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
 
     def save(self, request, **kwargs):
         current_site = get_current_site(request)
-        email = self.cleaned_data['email']
-        token_generator = kwargs.get('token_generator', default_token_generator)
+        email = self.cleaned_data["email"]
+        token_generator = kwargs.get("token_generator", default_token_generator)
 
         for user in self.users:
             temp_key = token_generator.make_token(user)
@@ -37,10 +41,13 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
                 "request": request,
             }
 
-            if app_settings.AUTHENTICATION_METHOD != app_settings.AuthenticationMethod.EMAIL:
-                context['username'] = user_username(user)
+            if (
+                app_settings.AUTHENTICATION_METHOD
+                != app_settings.AuthenticationMethod.EMAIL
+            ):
+                context["username"] = user_username(user)
             get_adapter(request).send_mail(
-                'account/email/password_reset_key', email, context
+                "account/email/password_reset_key", email, context
             )
 
-        return self.cleaned_data['email']
+        return self.cleaned_data["email"]

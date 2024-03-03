@@ -52,7 +52,7 @@ class CurrentSession(models.Model):
         db_table = "current_session"
 
 
-class Vacancies(models.Model):
+class Vacancy(models.Model):
     chat_name = models.CharField(max_length=150, blank=True, null=True)
     title = models.CharField(max_length=1000, blank=True, null=True)
     body = models.CharField(max_length=6000, blank=True, null=True)
@@ -96,16 +96,21 @@ class Vacancies(models.Model):
 
     class Meta:
         db_table = "vacancies"
+        verbose_name = "Vacancy"
+        verbose_name_plural = "Vacancies"
+
+    def __str__(self):
+        return f"{self.title} in {self.company}"
 
 
-class Companies(models.Model):
+class Company(models.Model):
     company = models.CharField(max_length=100)
 
     class Meta:
         db_table = "companies"
 
 
-class AdminVacancies(models.Model):
+class AdminVacancy(models.Model):
     chat_name = models.CharField(max_length=150, blank=True, null=True)
     title = models.CharField(max_length=1000, blank=True, null=True)
     body = models.CharField(max_length=6000, blank=True, null=True)
@@ -145,6 +150,8 @@ class AdminVacancies(models.Model):
 
     class Meta:
         db_table = "admin_last_session"
+        verbose_name = "Admin vacancy"
+        verbose_name_plural = "Admin vacancies"
 
     def __str__(self):
         return f"{self.title} in {self.company}"

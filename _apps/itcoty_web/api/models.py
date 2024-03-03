@@ -1,4 +1,3 @@
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -54,7 +53,6 @@ class CurrentSession(models.Model):
 
 
 class Vacancies(models.Model):
-    id = models.IntegerField(primary_key=True)
     chat_name = models.CharField(max_length=150, blank=True, null=True)
     title = models.CharField(max_length=1000, blank=True, null=True)
     body = models.CharField(max_length=6000, blank=True, null=True)
@@ -67,8 +65,8 @@ class Vacancies(models.Model):
     job_type = models.CharField(max_length=700, blank=True, null=True)
     city = models.CharField(max_length=150, blank=True, null=True)
     salary = models.CharField(max_length=300, blank=True, null=True)
-    salary_from = models.IntegerField()
-    salary_to = models.IntegerField()
+    salary_from = models.IntegerField(blank=True, null=True)
+    salary_to = models.IntegerField(blank=True, null=True)
     salary_currency = models.CharField(max_length=20, blank=True, null=True)
     salary_period = models.CharField(max_length=50, blank=True, null=True)
     experience = models.CharField(max_length=700, blank=True, null=True)
@@ -77,7 +75,11 @@ class Vacancies(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     agregator_link = models.CharField(max_length=200, blank=True, null=True)
     session = models.ForeignKey(
-        CurrentSession, on_delete=models.SET_NULL, to_field="session"
+        CurrentSession,
+        on_delete=models.SET_NULL,
+        to_field="session",
+        null=True,
+        blank=True,
     )
     sended_to_agregator = models.CharField(max_length=30, blank=True, null=True)
     sub = models.CharField(max_length=250, blank=True, null=True)
@@ -87,8 +89,8 @@ class Vacancies(models.Model):
     short_session_numbers = models.CharField(max_length=300, blank=True, null=True)
     level = models.CharField(max_length=70, blank=True, null=True)
     approved = models.CharField(max_length=100, blank=True, null=True)
-    closed = models.BooleanField()
-    rate = models.FloatField()
+    closed = models.BooleanField(blank=True, null=True)
+    rate = models.FloatField(blank=True, null=True)
     salary_from_usd_month = models.IntegerField()
     salary_to_usd_month = models.IntegerField()
 
@@ -97,7 +99,6 @@ class Vacancies(models.Model):
 
 
 class Companies(models.Model):
-    id = models.IntegerField(primary_key=True)
     company = models.CharField(max_length=100)
 
     class Meta:
@@ -105,7 +106,6 @@ class Companies(models.Model):
 
 
 class AdminVacancies(models.Model):
-    id = models.IntegerField(primary_key=True)
     chat_name = models.CharField(max_length=150, blank=True, null=True)
     title = models.CharField(max_length=1000, blank=True, null=True)
     body = models.CharField(max_length=6000, blank=True, null=True)
@@ -118,8 +118,8 @@ class AdminVacancies(models.Model):
     job_type = models.CharField(max_length=700, blank=True, null=True)
     city = models.CharField(max_length=150, blank=True, null=True)
     salary = models.CharField(max_length=300, blank=True, null=True)
-    salary_from = models.IntegerField()
-    salary_to = models.IntegerField()
+    salary_from = models.IntegerField(blank=True, null=True)
+    salary_to = models.IntegerField(blank=True, null=True)
     salary_currency = models.CharField(max_length=20, blank=True, null=True)
     salary_period = models.CharField(max_length=50, blank=True, null=True)
     experience = models.CharField(max_length=700, blank=True, null=True)
@@ -128,7 +128,11 @@ class AdminVacancies(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     agregator_link = models.CharField(max_length=200, blank=True, null=True)
     session = models.ForeignKey(
-        CurrentSession, on_delete=models.SET_NULL, to_field="session"
+        CurrentSession,
+        on_delete=models.SET_NULL,
+        to_field="session",
+        null=True,
+        blank=True,
     )
     sended_to_agregator = models.CharField(max_length=30, blank=True, null=True)
     sub = models.CharField(max_length=250, blank=True, null=True)
@@ -141,3 +145,6 @@ class AdminVacancies(models.Model):
 
     class Meta:
         db_table = "admin_last_session"
+
+    def __str__(self):
+        return f"{self.title} in {self.company}"

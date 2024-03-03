@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from .forms import CustomAllAuthPasswordResetForm
+from .models import AdminVacancies
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -75,3 +76,41 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
     @property
     def password_reset_form_class(self):
         return CustomAllAuthPasswordResetForm
+
+
+class AllVacanciesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdminVacancies
+        fields = [
+            "id",
+            "chat_name",
+            "title",
+            "body",
+            "profession",
+            "vacancy",
+            "vacancy_url",
+            "company",
+            "english",
+            "relocation",
+            "job_type",
+            "city",
+            "salary",
+            "experience",
+            "contacts",
+            "time_of_public",
+            "created_at",
+            "agregator_link",
+            "session",
+            "sended_to_agregator",
+            "sub",
+            "tags",
+            "full_tags",
+            "full_anti_tags",
+            "short_session_numbers",
+            "level",
+            "approved",
+            "salary_from",
+            "salary_to",
+            "salary_currency",
+            "salary_period",
+        ]

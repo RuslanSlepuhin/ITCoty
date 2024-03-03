@@ -172,7 +172,6 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 
-
 GOOGLE_REDIRECT_URL = "http://127.0.0.1:8000/"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

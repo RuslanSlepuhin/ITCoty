@@ -1,11 +1,13 @@
 from datetime import date, timedelta
 
 from django_filters import rest_framework as filters
-from rest_framework import generics, mixins, viewsets
+from rest_framework import generics, mixins, permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
+from rest_framework.response import Response
 
 from ..filters import VacancyFilter
+from ..helpers import add_numeration_to_response
 from ..models import AdminVacancy, Vacancy
 from ..serializers import AllVacanciesSerializer, VacanciesSerializer
 
@@ -13,7 +15,7 @@ from ..serializers import AllVacanciesSerializer, VacanciesSerializer
 class AllVacanciesView(generics.ListAPIView):
     queryset = AdminVacancy.objects.all()
     serializer_class = AllVacanciesSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
 
 class VacanciesViewSet(
@@ -25,7 +27,55 @@ class VacanciesViewSet(
         # .distinct("id", "body") use in postgres only
     )
     serializer_class = VacanciesSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = VacancyFilter
     pagination_class = LimitOffsetPagination
+
+
+class ThreeVacanciesView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request: Request) -> Response:
+        trainees_vacancies = (
+            Vacancy.objects.values(
+                "id",
+                "profession",
+                "vacancy",
+                "company",
+                "job_type",
+                "city",
+                "salary",
+                "created_at",
+                "level",
+                "salary_from_usd_month",
+                "salary_to_usd_month",
+            )
+            .filter(level__icontains="trainee")
+            .order_by("-id")[:3]
+        )
+
+        common_vacancies = (
+            Vacancy.objects.values(
+                "id",
+                "profession",
+                "vacancy",
+                "company",
+                "job_type",
+                "city",
+                "salary",
+                "created_at",
+                "level",
+                "salary_from_usd_month",
+                "salary_to_usd_month",
+            )
+            .exclude(level__icontains="trainee")
+            .order_by("-id")[:3]
+        )
+
+        data = {
+            "common_vacancies": add_numeration_to_response(common_vacancies),
+            "vacancies": add_numeration_to_response(trainees_vacancies),
+        }
+
+        return Response(data)

@@ -49,6 +49,7 @@ class CurrentSession(models.Model):
     session = models.CharField(max_length=15, unique=True)
 
     class Meta:
+        managed = False
         db_table = "current_session"
 
 
@@ -71,8 +72,8 @@ class Vacancy(models.Model):
     salary_period = models.CharField(max_length=50, blank=True, null=True)
     experience = models.CharField(max_length=700, blank=True, null=True)
     contacts = models.CharField(max_length=500, blank=True, null=True)
-    time_of_public = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    time_of_public = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
     agregator_link = models.CharField(max_length=200, blank=True, null=True)
     session = models.ForeignKey(
         CurrentSession,
@@ -91,8 +92,8 @@ class Vacancy(models.Model):
     approved = models.CharField(max_length=100, blank=True, null=True)
     closed = models.BooleanField(blank=True, null=True)
     rate = models.FloatField(blank=True, null=True)
-    salary_from_usd_month = models.IntegerField()
-    salary_to_usd_month = models.IntegerField()
+    salary_from_usd_month = models.IntegerField(blank=True, null=True)
+    salary_to_usd_month = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = "vacancies"
@@ -107,6 +108,7 @@ class Company(models.Model):
     company = models.CharField(max_length=100)
 
     class Meta:
+        managed = False
         db_table = "companies"
 
 
@@ -129,8 +131,8 @@ class AdminVacancy(models.Model):
     salary_period = models.CharField(max_length=50, blank=True, null=True)
     experience = models.CharField(max_length=700, blank=True, null=True)
     contacts = models.CharField(max_length=500, blank=True, null=True)
-    time_of_public = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    time_of_public = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
     agregator_link = models.CharField(max_length=200, blank=True, null=True)
     session = models.ForeignKey(
         CurrentSession,
@@ -149,6 +151,7 @@ class AdminVacancy(models.Model):
     approved = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = "admin_last_session"
         verbose_name = "Admin vacancy"
         verbose_name_plural = "Admin vacancies"

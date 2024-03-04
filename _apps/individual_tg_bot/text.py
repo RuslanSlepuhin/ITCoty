@@ -23,14 +23,15 @@ suit_vacancies = "Подходящая новая вакансии: \n"
 new_request = "Хотите сделать новый запрос?"
 reset_request = "Сделать новый запрос"
 come_back = "Вернуться в главное меню"
-
+user_current_request = "Ваш текущий запрос:\n"
 # Интервалы для выбора вакансий
 every_thirty_min = 30
-once_per_day = 60 * 24 * 90
+once_per_day = 60 * 24
 
 create_table = """CREATE TABLE tg_bot ( user_id bigint ,name varchar(255), email varchar(255),direction varchar(255), specialization varchar(255),location varchar(255),salary_rate varchar(255),work_format varchar(255),keywords varchar(255),CV_url varchar(255)) """
 # Фильтр вакансий
 direction = "Необходимо выбрать IT направление"
+chosen_direction = "Выбранное направление: "
 specialization = "Выберите специализацию для направления"
 chosen_specialization = "Выбранные специализации:"
 

@@ -43,7 +43,7 @@ async def period_get_vacancy_on_getting_task(bot: Bot):
             level=rq.get("level"),
             location=rq.get("location"),
             work_format=rq.get("work_format"),
-            keyword=rq.get("keyword"),
+            keyword=rq.get("keywords"),
             interval=interval,
         )
 

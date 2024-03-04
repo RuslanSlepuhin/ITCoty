@@ -142,8 +142,7 @@ class AsyncPGDatabase:
             query += f"({specialization_conditions})"
             query += """ OR """
             keyword_conditions = " OR ".join(["body iLIKE %s" for _ in keyword.split()])
-            query += f"({keyword_conditions})"
-            query += """;"""
+            query += f"({keyword_conditions});"
             params = (
                 *[f"%{word}%" for word in level.split("', '")],
                 *[f"%{word}%" for word in direction.split("', '")],
@@ -152,11 +151,10 @@ class AsyncPGDatabase:
                 *[f"%{word}%" for word in keyword.split("', '")],
             )
             cursor.execute(query, params)
-            print(query)
             vacancies = cursor.fetchall()
             result = [dict(row) for row in vacancies]
             return result
-        except asyncpg.PostgresError as e:
+        except psycopg2.Error as e:
             self.logger.error(f"Error select data: {e}")
 
     async def vacancy(self):
@@ -221,32 +219,51 @@ class AsyncPGDatabase:
         try:
             cursor = self.connection_sync.cursor(cursor_factory=DictCursor)
             query = """
-                        SELECT * FROM vacancies
-                        WHERE level iLIKE %s
-                        AND sub iLIKE %s
-                        AND job_type iLIKE %s
-                        AND (body iLIKE %s OR body iLIKE %s)
-                        AND created_at >= %s
-                        ORDER BY created_at DESC
-                        ;
-                    """
+                                        SELECT * FROM vacancies
+                                        WHERE 
+                                            """
 
-            cursor.execute(
-                query,
-                (
-                    level,
-                    f"%{direction}%",
-                    f"%{work_format}%",
-                    f"%{specialization}%",
-                    f"%{keyword}%",
-                    interval,
-                ),
+            level_conditions = " OR ".join(["level iLIKE %s" for _ in level.split()])
+
+            query += f"({level_conditions})"
+            query += """ AND """
+
+            profession_conditions = " OR ".join(
+                ["profession iLIKE %s" for _ in direction.split()]
             )
+
+            query += f"({profession_conditions})"
+            query += """ AND """
+
+            job_type_conditions = " OR ".join(
+                ["job_type iLIKE %s" for _ in work_format.split()]
+            )
+            query += f"({job_type_conditions})"
+            query += """ AND """
+
+            specialization_conditions = " OR ".join(
+                ["body iLIKE %s" for _ in specialization.split()]
+            )
+
+            query += f"({specialization_conditions})"
+            query += """ OR """
+            keyword_conditions = " OR ".join(["body iLIKE %s" for _ in keyword.split()])
+            query += f"({keyword_conditions})"
+            query += """AND created_at >= %s ORDER BY created_at DESC;"""
+            params = (
+                *[f"%{word}%" for word in level.split()],
+                *[f"%{word}%" for word in direction.split()],
+                *[f"%{word}%" for word in work_format.split()],
+                *[f"%{word}%" for word in specialization.split()],
+                *[f"%{word}%" for word in keyword.split()],
+                interval,
+            )
+            cursor.execute(query, params)
             vacancies = cursor.fetchall()
             result = [dict(row) for row in vacancies]
             cursor.close()
             return result
-        except asyncpg.PostgresError as e:
+        except psycopg2.Error as e:
             self.logger.error(f"Error inserting data: {e}")
 
     async def change_user_notification(self, notification, user_id):

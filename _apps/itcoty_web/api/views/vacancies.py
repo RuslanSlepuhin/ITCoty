@@ -39,7 +39,9 @@ class VacanciesViewSet(
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         response = super().list(request, *args, **kwargs)
-        new_response = add_numeration_to_response(response.data)
+        new_response = {
+            "vacancies": add_numeration_to_response(response.data["results"])
+        }
 
         return Response(new_response)
 

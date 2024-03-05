@@ -1,5 +1,7 @@
 from datetime import date, timedelta
+from typing import Any
 
+from django.db.models import QuerySet
 from django_filters import rest_framework as filters
 from rest_framework import generics, mixins, permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
@@ -21,16 +23,25 @@ class AllVacanciesView(generics.ListAPIView):
 class VacanciesViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
-    date_start = date.today() - timedelta(days=20)
-    queryset = (
-        Vacancy.objects.filter(created_at__gt=date_start).order_by("-id")
-        # .distinct("id", "body") use in postgres only
-    )
     serializer_class = VacanciesSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = VacancyFilter
     pagination_class = LimitOffsetPagination
+
+    def get_queryset(self) -> QuerySet:
+        date_start = date.today() - timedelta(days=20)
+        queryset = (
+            Vacancy.objects.filter(created_at__gt=date_start).order_by("-id")
+            # .distinct("id", "body") use in postgres only
+        )
+        return queryset
+
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        response = super().list(request, *args, **kwargs)
+        new_response = add_numeration_to_response(response.data)
+
+        return Response(new_response)
 
 
 class ThreeVacanciesView(generics.GenericAPIView):

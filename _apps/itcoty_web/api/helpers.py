@@ -1,9 +1,9 @@
-from django.db.models import QuerySet
+from collections.abc import MutableMapping
 
 
-def add_numeration_to_response(query: list[QuerySet]) -> dict:
+def add_numeration_to_response(queryset: list[MutableMapping]) -> dict:
     result = {}
-    for n in range(len(query)):
-        result[str(n)] = query[n]
+    for n in range(len(queryset)):
+        result[str(n)] = queryset[n]
 
     return result

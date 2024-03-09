@@ -20,6 +20,7 @@ from sites.scraping_svyazi import SvyaziGetInformation
 from sites.scrapping_finder import FinderGetInformation
 from sites.scraping_ingamejob import IngameJobGetInformation
 from sites.scraping_remotejob_upgrade import RemoteJobGetInformation
+from sites.scraping_otta import OttaGetInformation
 from helper_functions import helper_functions as helper
 
 logs = Logs()
@@ -32,9 +33,10 @@ parser_sites = {'nn.hh.ru': HHGetInformation, 'spb.hh.ru': HHGetInformation, 'hh
                 'remotehub.com': RemotehubGetInformation, 'remote-job.ru': RemoteJobGetInformation,
                 'jobs.devby.io' : DevGetInformation, 'russia.superjob.ru': SuperJobGetInformation,
                 'superjob.ru': SuperJobGetInformation, 'career.habr.com': HabrGetInformation,
-                'u.habr.com': HabrGetInformation,'finder.vc': FinderGetInformation, 'geekjob.ru' : GeekGetInformation,
+                'u.habr.com': HabrGetInformation,'finder.vc': FinderGetInformation, 'geekjob.ru': GeekGetInformation,
                 'gkjb.ru': GeekGetInformation, 'designer.ru': DesignerGetInformation,
-                'www.vseti.app': SvyaziGetInformation, 'ru.ingamejob.com': IngameJobGetInformation}
+                'www.vseti.app': SvyaziGetInformation, 'ru.ingamejob.com': IngameJobGetInformation,
+                'https://app.otta.com': OttaGetInformation}
 
 
 class SitesParser:
@@ -73,6 +75,8 @@ class SitesParser:
         await DesignerGetInformation(bot_dict=bot_dict, report=self.report).get_content()
         await SvyaziGetInformation(bot_dict=bot_dict, report=self.report).get_content()
         await IngameJobGetInformation(bot_dict=bot_dict, report=self.report).get_content()
+        await OttaGetInformation(bot_dict=bot_dict, report=self.report).get_content()
+
 
         # await SuperJobGetInformation(bot_dict=bot_dict, report=self.report).get_content()
 

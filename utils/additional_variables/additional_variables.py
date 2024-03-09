@@ -19,6 +19,20 @@ shorts_database_fields_type = 'id SERIAL PRIMARY KEY, id_vacancy_from_admin_tabl
 profession_table_fields = "id, chat_name, title, body, profession, vacancy, vacancy_url, company, english, relocation, " \
                              "job_type, city, salary, experience, contacts, time_of_public, created_at, agregator_link, " \
                              "session, sub, tags, full_tags, full_anti_tags, short_session_numbers, level, approved"
+sorted_fields = [
+    "vacancy",
+    "level",
+    "experience",
+    "company",
+    "salary",
+    "relocation",
+    "job_type",
+    "city",
+    "english",
+    "vacancy_url",
+    "title",
+    "body",
+]
 
 
 fields_admin_temporary = "id_admin_channel, id_admin_last_session_table, sended_to_agregator"
@@ -343,5 +357,6 @@ hard_pushing_time_hour = [10, 30]
 excel_name_courses = './excel/courses.xlsx'
 fields_for_agregator_vacancy = ['vacancy', 'company', 'salary', 'job_type', 'city', 'english', 'experience', 'vacancy_url', 'title', 'body']
 sub_separator = "; "
+sub_separator_name = ": "
 double_n_before_field = 'vacancy_url'
 

@@ -1824,3 +1824,18 @@ class DataBaseOperations:
         if update:
             return f"UPDATE {table_name} SET ({keys_str}) = ({values_str}) WHERE id={vacancy_dict['id']}"
         return f"INSERT INTO {table_name} ({keys_str}) VALUES ({values_str})"
+
+    def update_vacancy_aggregator_message_id(self, vacancy_id:int, aggregator_id:str, table=admin_database) -> [bool]:
+        query = f"UPDATE {table} SET sended_to_agregator='{aggregator_id}' WHERE id={vacancy_id}"
+        return self.query_execute(query)
+
+    def query_execute(self, query):
+        self.con = self.connect_db() if not self.con else self.con
+        cur = self.con.cursor()
+        with self.con:
+            try:
+                cur.execute(query)
+            except Exception as ex:
+                print('query_execute', ex)
+                return False
+        return True

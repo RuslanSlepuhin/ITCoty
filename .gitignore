@@ -12,4 +12,5 @@ __pycache__/
 /__backup__/
 /settings/config_keys.ini
 .DS_Store
+*/itcoty_web/.mypy_cache
 /_apps/individual_tg_bot/.env

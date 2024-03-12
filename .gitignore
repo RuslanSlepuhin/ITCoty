@@ -1,7 +1,6 @@
 __pycache__/
 /.git/
 /.idea/
-
 /venv/
 /*.session
 /*.journal
@@ -12,3 +11,5 @@ __pycache__/
 /__backup__/
 /settings/config_keys.ini
 .vscode
+.DS_Store
+/_apps/individual_tg_bot/.env

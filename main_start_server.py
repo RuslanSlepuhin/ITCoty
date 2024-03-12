@@ -10,6 +10,7 @@ import settings.os_getenv as settings
 # ev = Event()
 
 num_processes = os.cpu_count()
+# num_processes - Эта переменная нигде не используется
 
 def start_bot(double=False, token_in=None):
     # time.sleep(3)

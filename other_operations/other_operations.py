@@ -7,7 +7,7 @@ from db_operations.scraping_db import DataBaseOperations
 import pandas as pd
 from helper_functions.helper_functions import to_dict_from_admin_response_sync
 from utils.additional_variables.additional_variables import admin_table_fields
-
+from settings.dirs import DIR_EXCEL
 #-----------------------------
 database2 = 'itcoty_backup'
 user2 = 'ruslan'
@@ -507,12 +507,12 @@ def write_to_excel_from_proff_and_nosort():
         }
     )
 
-    df.to_excel(f'./../excel/for_checking.xlsx', sheet_name='Sheet1')
+    df.to_excel(f'{DIR_EXCEL / "for_checking.xlsx"}', sheet_name='Sheet1')
     print('got it')
 
 def rewrite_vacancy():
     from __backup__.pattern_Alex2809 import vacancy_name
-    excel_data_df = pd.read_excel("./../excel/for_checking.xlsx", sheet_name='Sheet1')
+    excel_data_df = pd.read_excel(DIR_EXCEL / "for_checking.xlsx", sheet_name='Sheet1')
     excel_dict = {
             'chat_name': excel_data_df['chat_name'].tolist(),
             'title': excel_data_df['title'].tolist(),
@@ -560,7 +560,7 @@ def rewrite_vacancy():
             'contacts': excel_dict['contacts'],
         }
     )
-    df.to_excel(f'./../excel/for_checking.xlsx', sheet_name='Sheet1')
+    df.to_excel(f'{DIR_EXCEL / "for_checking.xlsx"}', sheet_name='Sheet1')
     print('got it ')
 
 def how_many_records(con):
@@ -682,7 +682,7 @@ def refresh():
         }
     )
 
-    df.to_excel(f'./../excel/professions_rewrite.xlsx', sheet_name='Sheet1')
+    df.to_excel(f'{DIR_EXCEL / "professions_rewrite.xlsx"}', sheet_name='Sheet1')
     print('got it')
 
 def check_double_and_delete():
@@ -820,7 +820,7 @@ def to_excel_from_response(response):
         }
     )
 
-    df.to_excel('./../excel/vacancy_params.xlsx', sheet_name='Sheet1')
+    df.to_excel(f'{DIR_EXCEL / "vacancy_params.xlsx"}', sheet_name='Sheet1')
     print('got it')
 
 

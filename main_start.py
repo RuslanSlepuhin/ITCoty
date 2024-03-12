@@ -1,3 +1,4 @@
+# Этот скрипт просто запускает функцию в файле endpoints.py
 import os
 import time
 # from invite_bot_ver2 import run as run_parser_bot
@@ -8,6 +9,7 @@ import settings.os_getenv as settings
 # ev = Event()
 
 num_processes = os.cpu_count()
+# применение переменной num_processes не найдено более нигде в проекте
 
 # def start_bot(double=False, token_in=None):
 #     # time.sleep(3)

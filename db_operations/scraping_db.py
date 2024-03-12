@@ -11,6 +11,7 @@ from logs.logs import Logs
 from helper_functions import helper_functions as helper
 from patterns._export_pattern import export_pattern
 import pandas as pd
+from settings.dirs import DIR_LOGS, DIR_EXCEL
 logs = Logs()
 
 config = configparser.ConfigParser()
@@ -24,7 +25,7 @@ class DataBaseOperations:
         if not self.con:
             self.connect_db()
         self.report = kwargs['report'] if 'report' in kwargs else None
-        self.admin_check_file = './logs/check_file.txt'
+        self.admin_check_file = DIR_LOGS / 'check_file.txt'
 
     def connect_db(self):
 
@@ -1620,7 +1621,7 @@ class DataBaseOperations:
         df2=df.groupby('chat_name').sum(numeric_only=True)
         len=df.shape[0]
 
-        with pd.ExcelWriter(f'./excel/report_{date1}_{date2}.xlsx') as writer:
+        with pd.ExcelWriter(f'{DIR_EXCEL / f"report_{date1}_{date2}.xlsx"}') as writer:
             df.to_excel(writer, sheet_name="Sheet1")
             df2.to_excel(writer, sheet_name="Sheet1", startrow=len+2,startcol=1, header=False)
             print('Report is done, saved')
@@ -1686,7 +1687,7 @@ class DataBaseOperations:
                                  value=df_total_channels.no_sort + df_total_channels.to_sort + df_total_channels.archive)
         df_total_channels.loc[f'Total for period'] = df_total_channels.sum(axis=0, numeric_only=True)
 
-        with pd.ExcelWriter(f'./excel/report_total_{date_in}_{date_out}.xlsx') as writer:
+        with pd.ExcelWriter(f'{DIR_EXCEL / f"report_total_{date_in}_{date_out}.xlsx"}') as writer:
             df_total.to_excel(writer, sheet_name="Total", index=False)
             df_total_channels.to_excel(writer, sheet_name="Channels", index=False)
             print('Report is done, saved')

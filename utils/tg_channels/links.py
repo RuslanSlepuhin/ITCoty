@@ -126,6 +126,11 @@ list_links = [
     'https://t.me/jobzilla_ua',
     'https://t.me/workforukrainianas',
     'https://t.me/workwithnazrin',
+    'https://t.me/perezvonyu',
+    'https://t.me/projects_jobs_feed',
+    'https://t.me/mindset_jobs',
+    'https://t.me/hireproproduct',
+
 ]
 
 digest_links = [

@@ -3,6 +3,7 @@ import requests
 
 def ask_gemini(question, text):
     read = "Прочитай текст вакансии и ответь"
+    vacancy_text = f"Текст вакансии: '{text}'. "
     questions = {
         "Is vacancy?":
             f"Прочитай текст и ответь является ли этот текст предложением работы? "
@@ -10,32 +11,32 @@ def ask_gemini(question, text):
             f"Ответь да или нет.",
         "What experience?":
             f"{read} какой опыт в ней требуется? "
-            f"Текст вакансии: '{text}'. "
+            f"{vacancy_text}"
             f"Ответь кратко.",
         "What area?":
             f"{read} какое направление IT специалиста в ней требуется? "
-            f"Текст вакансии: '{text}'."
+            f"{vacancy_text}"
             f"Ответь кратко.",
-        "What qualification?":
+        "What level?":
             f"{read} какая квалификация IT специалиста в ней требуется? "
-            f"Текст вакансии: '{text}'. "
-            f"Ответь одним словом из ряда: junior, middle, senior.",
+            f"{vacancy_text}"
+            f"Answer the question in English. Answer options: junior, middle, senior, junior-middle, middle-senior",
         "What salary?":
             f"{read} какую зарплату предлагают в вакансии? "
-            f"Текст вакансии: '{text}'. "
-            f"Ответь 'не указана' Если не достаточно даннных для ответа.",
+            f"{vacancy_text}"
+            f"Ответь '-' если не достаточно даннных для ответа.",
         "What contacts?":
             f"{read} есть ли в нем контактные данные работодателя или HR? "
-            f"Текст вакансии: '{text}'. "
+            f"{vacancy_text}"
             f"Найди номера телефонов или email. "
             f"Если данные не найдены, ответь: 'нет данных'.",
         "What English?":
             f"{read} какой требуемый уровень знания Английского языка в не указан? "
-            f"Текст вакансии: '{text}'. "
+            f"{vacancy_text}"
             f"Ответь кратко.",
         "What format?":
             f"{read} какой характер работы в ней подразумевается? "
-            f"Текст вакансии: '{text}'. "
+            f"{vacancy_text}"
             f"Ответь словосочетанием из ряда: "
             f"'удаленная работа', "
             f"'полный рабочий день', "
@@ -44,15 +45,14 @@ def ask_gemini(question, text):
             f"'разовая работа', ",
         "What company?":
             f"{read} название компании, предлагающей эту работу? "
-            f"Текст вакансии: '{text}'. ",
+            f"{vacancy_text}",
         "What city?":
             f"{read} название города, в котором предлагают эту работу? "
-            f"Текст вакансии: '{text}'. "
-            f"Назови страну, город."
-
+            f"{vacancy_text}"
+            f"Назови страну, город.",
     }
     url = "http://194.163.44.157/gemini_request"
-    data = {"request": f"{questions[question]}"}
+    data = {"request": f"{questions.get(question)}"}
     response = requests.post(url, json=data)
     answer = response.json()
     return answer["answer"]

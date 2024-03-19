@@ -2,6 +2,8 @@ import re
 from datetime import datetime
 import pandas as pd
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
@@ -10,8 +12,10 @@ from helper_functions.parser_find_add_parameters.parser_find_add_parameters impo
 from sites.write_each_vacancy_to_db import HelperSite_Parser
 from settings.browser_settings import options, chrome_driver_path
 from sites_additional_utils.ask_gemini import ask_gemini
-from utils.additional_variables.additional_variables import sites_search_words, till, admin_database, archive_database
-from helper_functions.helper_functions import edit_message, send_message
+from utils.additional_variables.additional_variables import sites_search_words, till, parsing_report_path, \
+    admin_database, archive_database
+from helper_functions.helper_functions import edit_message, send_message, send_file_to_user
+from report.report_variables import report_file_path
 from helper_functions import helper_functions as helper
 
 class GeekGetInformation:
@@ -88,7 +92,6 @@ class GeekGetInformation:
         if self.bot_dict:
             await self.bot.send_message(self.chat_id, 'geekjob.ru parsing: Done!', disable_web_page_preview=True)
 
-
     async def get_link_message(self, raw_content):
         soup = BeautifulSoup(raw_content, 'lxml')
 
@@ -149,16 +152,13 @@ class GeekGetInformation:
                             body = re.sub(r'\<[A-Za-z\/=\"\-\>\s\._\<]{1,}\>', " ", body)
                         except AttributeError:
                             body = ''
-                        is_vacancy = ask_gemini("Is vacancy?", title+body)
-                        if re.match(r"^[Hн]ет", is_vacancy):
-                            continue
-                        vacancy = ask_gemini("What area?", title+body)
+                        vacancy = title
 
                         # get level -----------------------------
                         try:
                             level = soup.find('div', class_='category').get_text()
                         except AttributeError:
-                            level = ask_gemini("What qualification?", title+body)
+                            level = ""
 
                         # get tags -----------------------------------------------
                         tags = ''
@@ -173,13 +173,13 @@ class GeekGetInformation:
                         if re.findall(r'[Аа]нглийский', tags) or re.findall(r'[Ee]nglish', tags):
                             english = 'English'
                         if not english:
-                            english = ask_gemini("What English?", title+body)
+                            emglish = ""
 
                         # get country, city --------------------------
                         try:
                             city = soup.find('div', class_='location').get_text()
                         except AttributeError:
-                            city = ask_gemini("What city?", title+body)
+                            city = ""
 
                         # get company --------------------------
                         try:
@@ -189,13 +189,13 @@ class GeekGetInformation:
                                 company = company.replace('Прямой работодатель ', '')
                                 company = company.replace('\n', ' ')
                         except AttributeError:
-                            company = ask_gemini("What company?", title+body)
+                            company = ""
 
                         # get salary --------------------------
                         try:
                             salary = soup.find('div', class_='jobinfo').find('span', class_='salary').get_text()
                         except AttributeError:
-                            salary = ask_gemini("What salary?", title+body)
+                            salary = ""
 
                         # get job type and experience --------------------------
                         try:
@@ -203,11 +203,10 @@ class GeekGetInformation:
                             job_format = job_type.splitlines()[0]
                             experience = job_type.splitlines()[1]
                         except AttributeError:
-                            job_format = ask_gemini("What format?", title+body)
-                            experience = ask_gemini("What experience", title+body)
+                            job_format = experience = ""
 
                         # get contacts ----------------------------------------
-                        contacts = ask_gemini("What contacts?", title+body)
+                        contacts = ""
 
                         # get time of public-------------------------------------
                         try:
@@ -256,11 +255,11 @@ class GeekGetInformation:
                         results_dict = {
                             'chat_name': 'https://geekjob.ru/',
                             'title': title,
-                            'level': level,
                             'body': body,
                             'vacancy': vacancy,
                             'vacancy_url': vacancy_url,
                             'company': company,
+                            'level': level,
                             'company_link': '',
                             'english': english,
                             'relocation': relocation,
@@ -272,9 +271,6 @@ class GeekGetInformation:
                             'contacts': contacts,
                             'session': self.current_session
                         }
-                        for k, v in results_dict.items():
-                            print(f"{k}:", v)
-
                         response = await self.helper_parser_site.write_each_vacancy(results_dict)
 
                         await self.output_logs(
@@ -295,7 +291,6 @@ class GeekGetInformation:
                     text=f"\n---\nfound by link: {self.found_by_link}",
                     msg=self.current_message
                 )
-
 
     async def get_content_from_one_link(self, vacancy_url):
         try:
@@ -338,14 +333,12 @@ class GeekGetInformation:
 
         return date
 
-
     def clean_company_name(self, text):
         text = re.sub('Прямой работодатель', '', text)
         text = re.sub(r'[(]{1} [a-zA-Z0-9\W\.]{1,30} [)]{1}', '', text)
         text = re.sub(r'Аккаунт зарегистрирован с (публичной почты|email) \*@[a-z.]*[, не email компании!]{0,1}', '', text)
         text = text.replace(f'\n', '')
         return text
-
 
     async def compose_in_one_file(self):
         hiring = []
@@ -369,7 +362,6 @@ class GeekGetInformation:
 
         df.to_excel(f'all_geek.xlsx', sheet_name='Sheet1')
 
-
     async def write_to_db_table_companies(self):
         excel_data_df = pd.read_excel('all_geek.xlsx', sheet_name='Sheet1')
         companies = excel_data_df['hiring'].tolist()
@@ -378,7 +370,6 @@ class GeekGetInformation:
         companies = set(companies)
 
         self.db.write_to_db_companies(companies)
-
 
     async def output_logs(self, about_vacancy, vacancy, word=None, vacancy_url=None):
         additional_message = ''

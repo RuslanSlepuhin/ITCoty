@@ -1,3 +1,4 @@
+from re import match
 from datetime import datetime
 
 from db_operations.scraping_db import DataBaseOperations
@@ -8,6 +9,7 @@ from utils.additional_variables.additional_variables import vacancy_table, rejec
     admin_database, archive_database, admin_table_fields
 from helper_functions.helper_functions import get_salary_usd_month, replace_NoneType, get_tags, \
     get_additional_values_fields, compose_simple_list_to_str, compose_to_str_from_list
+from sites.sites_additional_utils.ask_gemini import ask_gemini
 
 class HelperSite_Parser:
     def __init__(self, **kwargs):
@@ -20,17 +22,37 @@ class HelperSite_Parser:
 
 
     async def write_each_vacancy(self, results_dict):
+        gemini_prompt = results_dict['title'] + results_dict['body']
+        check_vacancy_not_exists = True
+        for question in ["Is vacancy?", "Is IT?",]:
+            answer = ask_gemini(question, gemini_prompt)
+            if match(r"^[Hн]ет", answer):
+                check_vacancy_not_exists = False
+                break
+
+        if not results_dict['level']:
+            results_dict['level'] = ask_gemini("What level?", gemini_prompt)
+            results_dict['check_level'] = results_dict['level']
+        if not results_dict['contacts']:
+            results_dict['contacts'] = ask_gemini("What contacts?", gemini_prompt)
+        if not results_dict['city']:
+            results_dict['city'] = ask_gemini("What city?", gemini_prompt)
+        if not results_dict['salary']:
+            results_dict['salary'] = ask_gemini("What salary?", gemini_prompt)
+        if not results_dict['experience']:
+            results_dict['experience'] = ask_gemini("What experience?", gemini_prompt)
+
+
         self.results_dict = results_dict
         response = {}
         response_from_db = {}
 
         if self.report:
             self.report.parsing_report(
-                link_current_vacancy = self.results_dict['vacancy_url'],
-                title = self.results_dict['title'],
-                body = self.results_dict['body'],
+                link_current_vacancy=self.results_dict['vacancy_url'],
+                title=self.results_dict['title'],
+                body=self.results_dict['body'],
             )
-        check_vacancy_not_exists = True
 
         # search this vacancy in database
         if 'vacancy_url' in self.results_dict and self.results_dict['vacancy_url']:
@@ -50,7 +72,6 @@ class HelperSite_Parser:
                 check_contacts=False,
                 vacancy_dict=self.results_dict
             )
-
             self.profession = self.profession['profession']
 
             if self.report:
@@ -123,7 +144,11 @@ class HelperSite_Parser:
         self.results_dict['full_tags'] = self.profession['tag'].replace("'", "")
         self.results_dict['full_anti_tags'] = self.profession['anti_tag'].replace("'", "")
         self.results_dict['created_at'] = datetime.now()
-        self.results_dict['level'] = self.profession['level']
+        if self.profession['level']:
+            self.results_dict['level'] = self.profession['level']
+        else:
+            gemini_prompt = self.results_dict['title']+self.results_dict['body']
+            self.results_dict['level'] = ask_gemini("What level?", gemini_prompt)
         self.results_dict['company'] = self.db.clear_title_or_body(self.results_dict['company'])
         self.results_dict['profession'] = compose_simple_list_to_str(data_list=self.profession['profession'], separator=', ')
         self.results_dict['sub'] = compose_to_str_from_list(data_list=self.profession['sub'])

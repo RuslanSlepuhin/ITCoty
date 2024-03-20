@@ -23,8 +23,13 @@ class HelperSite_Parser:
 
     async def write_each_vacancy(self, results_dict):
         gemini_prompt = results_dict['title'] + results_dict['body']
-        is_vacancy = ask_gemini("Is vacancy?", gemini_prompt)
-        check_vacancy_not_exists = False if match(r"^[Hн]ет", is_vacancy) else True
+        check_vacancy_not_exists = True
+        for question in ["Is vacancy?", "Is IT?",]:
+            answer = ask_gemini(question, gemini_prompt)
+            if match(r"^[Hн]ет", answer):
+                check_vacancy_not_exists = False
+                break
+
         if not results_dict['level']:
             results_dict['level'] = ask_gemini("What level?", gemini_prompt)
             results_dict['check_level'] = results_dict['level']

@@ -1,5 +1,7 @@
 import re
 from datetime import datetime
+
+import bs4
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -41,6 +43,20 @@ class HHGetInformation:
         self.found_by_link = 0
         self.response = {}
         self.helper = helper
+
+    def format_body_text(self, body_content: bs4.BeautifulSoup.element.Tag) -> str:
+        """ Makes the vacancy body text more readable """
+        body_text = body_content.get_text(separator="<>")
+        body_text = (body_text
+                     .replace("<> <> <> <>", "\n")
+                     .replace("<> <> <>", "\n")
+                     .replace("<> <>", "\n")
+                     .replace("<>","")
+                     .replace("!", "! ")
+                     .replace(".•", ".\n•")
+                     .replace(";•", ".\n•")
+                     .replace(".", ". "))
+        return body_text
 
     async def get_content(self, db_tables=None):
         self.db_tables = db_tables
@@ -180,8 +196,8 @@ class HHGetInformation:
 
                         body = ''
                         try:
-                            body = soup.find('div', class_='vacancy-section').get_text()
-                            body = body.replace('\n\n', '\n')
+                            body = soup.find('div', class_='vacancy-section')
+                            body = self.format_body_text(body)
                             body = re.sub(r'\<[A-Za-z\/=\"\-\>\s\._\<]{1,}\>', " ", body)
                         except Exception as e:
                             print(f"error body: {e}")
@@ -457,4 +473,11 @@ class HHGetInformation:
 # loop = asyncio.new_event_loop()
 # loop.run_until_complete(HHGetInformation(bot_dict={}).get_content())
 
+if __name__ =="__main__":
+    from pathlib import Path
+    root_path = Path(__file__).resolve().parent.parent
+    chrome_driver_path = root_path / "utils" / "chromedriver" / "chromedriver.exe"
+    from asyncio import run
+    scraper = HHGetInformation(bot_dict={})
+    run(scraper.get_content())
 

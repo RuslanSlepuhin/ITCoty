@@ -473,4 +473,11 @@ class HHGetInformation:
 # loop = asyncio.new_event_loop()
 # loop.run_until_complete(HHGetInformation(bot_dict={}).get_content())
 
+if __name__ =="__main__":
+    from pathlib import Path
+    root_path = Path(__file__).resolve().parent.parent
+    chrome_driver_path = root_path / "utils" / "chromedriver" / "chromedriver.exe"
+    from asyncio import run
+    scraper = HHGetInformation(bot_dict={})
+    run(scraper.get_content())
 
